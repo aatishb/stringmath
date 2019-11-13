@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Making Music With Math</title>
+
+
+  <link href="https://fonts.googleapis.com/css?family=Unica+One|Vollkorn&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+
+  <script src="./libraries/katex.min.js"></script>
+  <script src="./libraries/p5.min.js"></script>
+  <script src="./libraries/marked.min.js"></script>
+  <script src="./libraries/vue.js"></script>
+  <script src="./libraries/vue-observe-visibility.min.js"></script>
+  <script src="./libraries/audio.js"></script>
+  <!--<script src="./libraries/plotly.min.js"></script>-->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <meta name="description" content="Making Music With Math" />
+</head>
+<body>
+
+<div id="root" class="container">
+<md>
+# Making Music with Math
+### A Guide to Synthesizing Sounds with the Wave Equation
+
+A vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation). This is an equation that governs how each part of the string vibrates. Using this equation, it's possible to simulate the motion of a vibrating string and generate musical tones, such as a plucked guitar string or a struck piano string. In this post we'll explain how you can do this.
+
+## The Ideal String
+
+To get started, let's take a look at the wave equation:
+
+$$ \frac{\partial^2 y}{\partial t^2} = c^2 \frac{\partial^2 y}{\partial x^2} $$
+
+Or, written more concisely:
+
+$$\ddot{y} = c^2 y''$$
+
+In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point.
+
+Here, x refers to the position along the string, and t refers to time. $y(x,t)$ is a function of position and time, and tells us the displacement (height) of a point a distance $x$ along the string at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
+
+A general solution to the wave equation is:
+
+$$ y = (A \sin (k x) + B \cos (k x)) (C \sin(\omega t) + D \cos(\omega t)) $$
+
+This works because $y'' = - k^2 y $ & $\ddot{y} = -\omega^2 y$, so the wave equation is satisfied so long as $\omega = \pm c k$.
+
+The next step is to impose the boundary conditions of the string. The string is fixed at both ends, which means that
+$$ y(0,t) = 0 $$
+$$ y(L,t) = 0 $$
+
+Applying the first condition tell us that $B=0$, while applying the second condition tells us that $k = \frac{n\pi}{L}$ for $n = 1,2,3,...$
+
+In other words, the fact that the string is fixed at both ends insures that there are only certain possible frequencies at which the string can vibrate.
+
+So, our general solution simplifies to
+
+$$ y_n = \sin (k_n x) \big( A \cos(\omega_n t) + B \sin(\omega_n t) \big)$$
+
+where we've redefined our coefficients as $A$ and $B$, and $k_n = \frac{n \pi}{L}$, $\omega_n = c \frac{n \pi}{L}$
+
+These $y_n$ are known as the normal modes of the string, and they represent the different ways in which the string is allowed the vibrate.
+Let's visualize what the first few of these normal modes look like.
+</md>
+
+<div>
+    <div class="center">
+      <div class="center-inline">
+        <div>n = {{stringnormalmodes.n}}</div> &nbsp;&nbsp; <input type="range" min="1" max="5" step="1" v-model.number="stringnormalmodes.n" ></input>
+      </div>
+    </div>
+  <p5 src="./stringnormalmodes.js" :data="stringnormalmodes"></p5>
+</div>
+
+<md>
+As expected, the constraints ensure that the string remains fixed at the ends. Every normal mode is a possibly way in which the string can vibrate. As we increase $n$, the string oscillates more rapidly, and the oscillations are more energetic.
+
+A somewhat amazing fact is that any initial string shape can be expressed as a sum of different normal modes, so long as the ends are fixed. So, the most general type of string vibration is
+
+$$ y = \sum_{n=1}^\infty y_n = \sum_{n=1}^\infty \sin (k_n x) \big( A_n \cos(\omega_n t) + B_n \sin(\omega_n t) \big)$$
+
+where $k_n = \frac{n \pi}{L}$, $\omega_n = c k_n$, and $c$ is the speed of the travelling wave in the string.
+
+Solving the wave equation now amounts to working out the coefficients $A_n$ and $B_n$. Once we know these coefficients, plugging them into the equation above gives us the motion of every point on the string for all time.
+
+To obtain these coefficients, we need to know something more about the string. In particular, we need to know the initial position and initial velocity of the string, which we can write as $f(x)$ and $g(x)$.
+
+$$ y(x,0) = f(x) $$
+$$ \dot{y}(x,0) = g(x) $$
+
+If $g(x) = 0$, then the string starts off with a certain shape, but each point on it has zero initial velocity. We call this a plucked string. On the other hand, if $f(x) = 0$, then the string starts off completely flat, but with some velocity, as if a hammer suddenly struck it. We call this a struck strung. Let's consider these two cases separately.
+
+## The Ideal Plucked String
+
+If the string is plucked, it has zero initial velocity. So,
+
+$$ \dot{y}(x,0) = 0 $$
+
+A little math shows that
+
+$$ \dot{y}(x,0) = \sum_{n=1}^\infty \sin (k_n x) \big( -A_n \omega_n \sin(0) + B_n \omega_n \cos(0) \big) = \sum_{n=1}^\infty \sin (k_n x) B_n \omega_n $$
+
+For this to be zero, it must be the case that $B_n = 0$ for all $n$. So our general solution for the case of the plucked string reduces to
+
+$$ y = \sum_{n=1}^\infty y_n = \sum_{n=1}^\infty A_n \sin (k_n x)  \cos(\omega_n t)$$
+
+Let's assume that we know the initial shape of the string, which we represent by the function $f(x)$.
+
+$$ y(x,0) = f(x) $$
+
+So,
+
+$$ f(x) = \sum_{n=1}^\infty A_n \sin (\frac{n \pi x}{L}) $$
+
+To solve this equation, we need to find the values of all the $A_n$. We can do so using the classic Fourier trick
+
+$$ \int_{0}^{L} \sin (\frac{n \pi x}{L}) \sin (\frac{m \pi x}{L}) = \frac{L}{2} \delta_{m,n}$$
+
+where $\delta_{m,n} = 1$ if $m=n$, and zero otherwise.
+
+Applying this identity and a little algebra, we end up with an equation for the coefficients (known as Fourier coefficients).
+
+$$ A_n =  \frac{2}{L} \int_{0}^{L} f(x) \sin (\frac{n \pi x}{L}) dx$$
+
+This solves the case of the ideal plucked string.
+
+Let's try an example. Say that the string is plucked at a length $l$ along the string, with an initially triangular string shape.
+
+$$
+f(x) = \begin{cases}
+   h \frac{x}{L} & \text{if } x \leq l \\
+   h (1 - \frac{x}{L})\frac{L}{L-l} & \text{if } l < x \leq L
+\end{cases}
+$$
+
+Plugging this into to our integral for $A_n$, we can use Mathematica to solve this. The solution is
+
+$$ A_n = \frac{1}{n^2 \pi^2} \frac{2 h}{l (1-\frac{l}{L})} \big( L \sin(\frac{n \pi l}{L}) - l \sin (n \pi)\big)$$
+
+Let's animate this solution for the first $N$ terms in the sum.
+
+$$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
+
+</md>
+
+<div>
+    <div class="center">
+      <div class="center-inline">
+        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
+      </div>
+      <div class="center-inline">
+        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
+      </div>
+    </div>
+  <p5 src="./pluckedstringanimation.js" :data="pluckedstring"></p5>
+</div>
+
+<md>
+The animation above shows the motion of the string following the pluck.
+
+Let's use this to make sound. To extract the waveform $w(t)$, we want only the time dependent part of the string motion.
+
+$$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
+
+
+</md>
+
+<div>
+    <div class="center">
+      <div class="center-inline">
+        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
+      </div>
+      <div class="center-inline">
+        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
+      </div>
+    </div>
+  <p5 src="./pluckedstringwaveform.js" :data="pluckedstring"></p5>
+</div>
+
+<md>
+  Let's make sound with this. To do so, we just need to rewrite $\omega_n$ in terms of the fundamental frequency of the tone, $\omega_n = 2 \pi n f$. Let's also assume that each sine oscillator falls off exponentially with a time period proportional to its frequency. Making these changes,
+
+  $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t)$$
+
+  Since we don't care about an overall phase, we can replace the cosine with sine waves. In other words, we want to mix together N sine oscillators, with amplitudes set according to the function $A_n$, and whose frequencies are $f_n = f, 2f, 3f, ...$, where $f$ is the fundamental frequency of the sound.
+
+  Here's what this sounds like.
+</md>
+
+<div>
+    <div class="center">
+
+      <div class="center-inline">
+        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
+      </div>
+
+      <div class="center-inline">
+        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
+      </div>
+
+      <button @click="playPluckedString">Play Sound</button>
+
+    </div>
+</div>
+
+</div>
+
+<!-- page code -->
+<script src="vue-definitions.js"></script>
+
+</body>
+</html>
