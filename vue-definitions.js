@@ -1,3 +1,74 @@
+Vue.component('animation', {
+
+  template: `
+  <div>
+    <div class="center">
+
+      <div class="center-inline" v-for="s in sliders">
+        <div> {{s[0]}} {{getVarName(s)}} = {{vars[getVarName(s)]}} </div>
+        &nbsp;&nbsp;
+        <input type="range" :min="s[1]" :max="s[2]" :step="s[3]"
+          v-model.number="vars[getVarName(s)]"></input>
+      </div>
+
+      <slot></slot>
+
+    </div>
+
+  <p5 v-if="code" src="./drawGraph.js" :data="{vars: vars, graph: graph}"></p5>
+
+  </div>
+  `,
+
+  props: ['vars', 'sliders', 'code'],
+
+  methods: {
+    getVarName(val) {
+      return Object.keys(this.sliders).find(key => this.sliders[key] == val);
+    },
+
+    getVar(val) {
+      return this.vars[this.getVarName(val)];
+    },
+
+    calculate() {
+      console.log(this.graph(0.5, 0.1, ...Object.values(this.vars)));
+    }
+  },
+
+  data: function() {
+    return {
+      graph: NaN
+    }
+  },
+
+  mounted() {
+    //let code = this.code;
+    //this.$refs.animation.innerHTML = '';
+    //console.log('animation component mounted');
+
+    if (this.code) {
+      try {
+
+        eval(this.code);
+        // console.log(code);
+        this.graph = graph;
+        // console.log(this.vars);
+        //console.log(this.sliders['a']);
+        //console.log(this.getSliderName(this.sliders['a']));
+        // console.log(this.graph(0.5, 0.1, ...Object.values(this.vars)));
+
+      } catch(error) {
+
+        console.log(code);
+        console.log(error);
+
+      }
+    }
+  }
+
+});
+
 // custom markdown component
 Vue.component('md', {
 
@@ -208,18 +279,31 @@ let app = new Vue({
 
 
   data: {
-
     stringnormalmodes: {
+      n: 1,
       a: 1,
-      b: 0,
-      n: 1
+      b: 0
     },
 
     pluckedstring: {
       N: 20,
       l: 0.5
-    }
+    },
 
+    mixingmodes: {
+      c: 0,
+      A1: 1,
+      A2: 0,
+      A3: 0,
+      A4: 0,
+      A5: 0,
+      A6: 0,
+    },
+
+    trianglecurve: {
+      l: 0.3,
+      h: 1
+    }
   }
 
 })

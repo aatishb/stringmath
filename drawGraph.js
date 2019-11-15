@@ -5,6 +5,7 @@ function sketch(parent) { // we pass the sketch data from the parent
   return function( p ) { // p could be any variable name
 
     // p5 sketch goes here
+    let graph = parent.data.graph;
 
     p.setup = function() {
       let canvas = p.createCanvas(400, 200);
@@ -17,20 +18,25 @@ function sketch(parent) { // we pass the sketch data from the parent
 
     p.draw = function() {
       if (parent.isVisible) {
+
+        let t = p.millis()/1000;
+
         p.background(0);
-        //p.rect(parent.data.x, parent.data.y, 50, 50);
+
+
         p.beginShape();
-        for(let x=0; x<p.width; x+=1) {
-          let n = parent.data.n;
-          let k = n * p.PI / p.width;
-          let c = 150;
-          let w = c * k;
-          let t = p.millis()/1000;
-          let a = parent.data.a;
-          let b = parent.data.b;
-          let y = p.map(p.sin(k * x) * (a * p.sin(w * t) + b * p.cos(w * t)) , -1, 1, 0, p.height);
-          p.vertex(x, y);
+
+        for (let x=0; x<=1.005; x+=0.005) {
+
+          let y = 0;
+          let vars = Object.values(parent.data.vars);
+          y = graph(x,t,...vars);
+          p.vertex(
+            p.width * x,
+            p.map(y, -1, 1, p.height, 0)
+          );
         }
+
         p.endShape();
       }
     };

@@ -26,19 +26,19 @@
 # Making Music with Math
 ### A Guide to Synthesizing Sounds with the Wave Equation
 
-A vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation). This is an equation that governs how each part of the string vibrates. Using this equation, it's possible to simulate the motion of a vibrating string and generate musical tones, such as a plucked guitar string or a struck piano string. In this post we'll explain how you can do this.
+A vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation). This equation governs how each part of the string vibrates. Using this equation, it's possible to simulate the motion of a vibrating string and generate musical tones, such as that of a plucked guitar string or a struck piano string. In this post we'll explain how you can do this.
 
 ## The Ideal String
 
-To get started, let's take a look at the wave equation:
+To get started, let's take a look at the wave equation.
 
 $$ \frac{\partial^2 y}{\partial t^2} = c^2 \frac{\partial^2 y}{\partial x^2} $$
 
-Or, written more concisely:
+This can be written more concisely as
 
 $$\ddot{y} = c^2 y''$$
 
-In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point.
+In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point. So, any point on the string where there's a bend or a kink will start to accelerate.
 
 Here, x refers to the position along the string, and t refers to time. $y(x,t)$ is a function of position and time, and tells us the displacement (height) of a point a distance $x$ along the string at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
 
@@ -66,19 +66,45 @@ These $y_n$ are known as the normal modes of the string, and they represent the 
 Let's visualize what the first few of these normal modes look like.
 </md>
 
-<div>
-    <div class="center">
-      <div class="center-inline">
-        <div>n = {{stringnormalmodes.n}}</div> &nbsp;&nbsp; <input type="range" min="1" max="5" step="1" v-model.number="stringnormalmodes.n" ></input>
-      </div>
-    </div>
-  <p5 src="./stringnormalmodes.js" :data="stringnormalmodes"></p5>
-</div>
+<animation :vars="stringnormalmodes" :sliders="{n: ['Mode Number', 1, 6, 1]}" :code="`
+
+function graph(x, t, n, a, b) {
+  let k = n * Math.PI;
+  let c = 0.375;
+  let w = c * k;
+
+  return Math.sin(k * x) * (a * Math.sin(w * t) + b * Math.cos(w * t));
+}
+
+`">
+</animation>
 
 <md>
-As expected, the constraints ensure that the string remains fixed at the ends. Every normal mode is a possibly way in which the string can vibrate. As we increase $n$, the string oscillates more rapidly, and the oscillations are more energetic.
+Every normal mode is a possible way in which the string can vibrate. As expected, the constraints ensure that the string remains fixed at the ends. As we increase $n$, the oscillations become more energetic as the string oscillates more rapidly.
 
-A somewhat amazing fact is that any initial string shape can be expressed as a sum of different normal modes, so long as the ends are fixed. So, the most general type of string vibration is
+We can add different normal modes together to get more complicated vibration patterns. Just for fun, in the interactive below you can drag the sliders to mix in different amounts of the first 6 normal modes (we're adjusting the A parameter here, the B parameter is set to zero). When you're done, turn up the speed slider to unfreeze the wave and watch the ensuing wave motion.
+</md>
+
+<animation :vars="mixingmodes" :sliders="{A1: ['1st mode', 0, 1, 0.01], A2: ['2nd mode', 0, 1, 0.01], A3: ['3rd mode', 0, 1, 0.01], A4: ['4th mode', 0, 1, 0.01], A5: ['5th mode', 0, 1, 0.01], A6: ['6th mode', 0, 0.5, 0.01], c: ['Speed', 0, 1, 0.01]}" :code="`
+
+function graph(x, t, c, ...a) {
+
+  let y = 0;
+
+  for (let n=1; n<=6; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    y += Math.sin(k * x) * (a[n-1] * Math.cos(w * t))
+  }
+
+  return y/6;
+}
+
+`">
+</animation>
+
+<md>
+A somewhat amazing fact is that any initial string shape can be expressed as a sum of different normal modes. So, the most general type of string vibration is
 
 $$ y = \sum_{n=1}^\infty y_n = \sum_{n=1}^\infty \sin (k_n x) \big( A_n \cos(\omega_n t) + B_n \sin(\omega_n t) \big)$$
 
@@ -131,12 +157,24 @@ Let's try an example. Say that the string is plucked at a length $l$ along the s
 
 $$
 f(x) = \begin{cases}
-   h \frac{x}{L} & \text{if } x \leq l \\
+   h \frac{x}{l} & \text{if } x \leq l \\
    h (1 - \frac{x}{L})\frac{L}{L-l} & \text{if } l < x \leq L
 \end{cases}
 $$
 
-Plugging this into to our integral for $A_n$, we can use Mathematica to solve this. The solution is
+Here's what this function for the plucked guitar string shape looks like.</md>
+
+
+<animation :vars="trianglecurve" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
+
+function graph(x, t, l, h) {
+  return x <= l ? h * x/l : h * (1 - x) / (1-l);
+}
+
+`"></animation>
+
+<md>
+Plugging this into to our integral for $A_n$, we can use a tool like Wolfram Alphato solve this. The [solution](https://www.wolframalpha.com/input/?i=%282%2FL%29*%28Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*x%2Fl%2C%7Bx%2C0%2Cl%7D%5D+%2B+Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*%281-x%2FL%29*%28L%2F%28L-l%29%29%2C%7Bx%2Cl%2CL%7D%5D%29)  is
 
 $$ A_n = \frac{1}{n^2 \pi^2} \frac{2 h}{l (1-\frac{l}{L})} \big( L \sin(\frac{n \pi l}{L}) - l \sin (n \pi)\big)$$
 
@@ -146,17 +184,25 @@ $$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
 
 </md>
 
-<div>
-    <div class="center">
-      <div class="center-inline">
-        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
-      </div>
-      <div class="center-inline">
-        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
-      </div>
-    </div>
-  <p5 src="./pluckedstringanimation.js" :data="pluckedstring"></p5>
-</div>
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 20, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+  let c = 0.375;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI));
+
+    y += a * Math.sin(k * x) * Math.cos(w * t);
+
+  }
+
+  return y;
+}
+
+`"></animation>
 
 <md>
 The animation above shows the motion of the string following the pluck.
@@ -168,17 +214,26 @@ $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
 
 </md>
 
-<div>
-    <div class="center">
-      <div class="center-inline">
-        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
-      </div>
-      <div class="center-inline">
-        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
-      </div>
-    </div>
-  <p5 src="./pluckedstringwaveform.js" :data="pluckedstring"></p5>
-</div>
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 20, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+
+  let c = 0.375;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (1/Math.pow((n * Math.PI),2)) * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI));
+
+    y += a * Math.cos(w * x * 20);
+
+  }
+
+  return y/1.5;
+}
+
+`"></animation>
 
 <md>
   Let's make sound with this. To do so, we just need to rewrite $\omega_n$ in terms of the fundamental frequency of the tone, $\omega_n = 2 \pi n f$. Let's also assume that each sine oscillator falls off exponentially with a time period proportional to its frequency. Making these changes,
@@ -190,21 +245,11 @@ $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
   Here's what this sounds like.
 </md>
 
-<div>
-    <div class="center">
 
-      <div class="center-inline">
-        <div>Pluck Position l = {{pluckedstring.l}}</div> &nbsp;&nbsp; <input type="range" min="0.1" max="0.9" step="0.01" v-model.number="pluckedstring.l" ></input>
-      </div>
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 20, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+  <button @click="playPluckedString">Play Sound</button>
+</animation>
 
-      <div class="center-inline">
-        <div>Number of terms N = {{pluckedstring.N}}</div> &nbsp;&nbsp; <input type="range" min="1" max="20" step="1" v-model.number="pluckedstring.N" ></input>
-      </div>
-
-      <button @click="playPluckedString">Play Sound</button>
-
-    </div>
-</div>
 
 </div>
 
