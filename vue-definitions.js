@@ -266,8 +266,8 @@ let app = new Vue({
       }
 
       // normalize amplitude array
-      let sumSq = ampArray.map(e => e*e).reduce((a,b) => a + b);
-      ampArray = ampArray.map(e => e/Math.sqrt(sumSq));
+      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
+      ampArray = ampArray.map(e => e/largest);
 
       this.playString(ampArray);
 
@@ -291,14 +291,15 @@ let app = new Vue({
       }
 
       // normalize amplitude array
-      let sumSq = ampArray.map(e => e*e).reduce((a,b) => a + b);
-      ampArray = ampArray.map(e => e/Math.sqrt(sumSq));
+      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
+      ampArray = ampArray.map(e => e/largest);
 
       this.playString(ampArray);
 
     },
 
     playString(ampArray) {
+      console.log(ampArray);
 
       let N = parseInt(this.pluckedstring.N);
 
@@ -339,7 +340,7 @@ let app = new Vue({
       for (let osc of oscArray) {
         let i = osc.index;
         let o = osc.osc;
-        let maxGain = Math.min(0.5, 1/N);
+        let maxGain = Math.min(0.5, 0.5/N);
 
         fade(o, T , fadeTime/(i+1), maxGain);
       }
