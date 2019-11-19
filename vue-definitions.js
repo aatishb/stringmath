@@ -299,7 +299,7 @@ let app = new Vue({
     },
 
     playString(ampArray) {
-      console.log(ampArray);
+      //console.log(ampArray);
 
       let N = parseInt(this.pluckedstring.N);
 
