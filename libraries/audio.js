@@ -9,8 +9,27 @@ function startAudio() {
 
 startAudio();
 
+let epsilon = 1e-6;
+
+function fade(osc, T, fadeTime) {
+    let tau = fadeTime * Math.log(0.4/epsilon);
+
+    let attackTime = 0.1;
+
+    let gain = context.createGain();
+    osc.connect(gain);
+
+    gain.gain.setValueAtTime(0, T);
+    gain.gain.linearRampToValueAtTime(0.4, T + attackTime);
+    gain.connect(context.destination);
+
+    osc.start(T);
+    setTimeout((fadeOut(gain, T, tau)), attackTime * 1000);
+    osc.stop(T + 0.1 + tau);
+
+}
+
 function tone(freq, amp, T, fadeTime=1) {
-    //var T = context.currentTime;
 
     var osc = context.createOscillator();
     osc.type = "sine";
@@ -25,9 +44,9 @@ function tone(freq, amp, T, fadeTime=1) {
 
     osc.start(T);
     setTimeout((fadeOut(gain, T, fadeTime)), 100);
-    osc.stop(T + 2);
+    osc.stop(T + 0.1 + fadeTime * Math.log(0.4/epsilon));
 }
 
 function fadeOut(gain, T, fadeTime) {
-  gain.gain.exponentialRampToValueAtTime(0.01, T + 0.1 + fadeTime);
+  gain.gain.exponentialRampToValueAtTime(epsilon, T + 0.1 + fadeTime);
 }

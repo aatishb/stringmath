@@ -249,28 +249,52 @@ let app = new Vue({
 
   methods: {
     playPluckedString() {
-      let l = this.pluckedstring.l;
-      let N = this.pluckedstring.N;
+      let l = parseFloat(this.pluckedstring.l);
+      let N = parseInt(this.pluckedstring.N);
 
-      let amp = [];
+
+      let zero = new Float32Array(N+1).fill(0);
+      let real;
+      let img;
+
+      let oscArray = [];
+      let waveArray = [];
 
       for (let n = 1; n <= N; n++) {
 
-        amp.push(
-          (1/Math.pow((n * Math.PI),2)) * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI))
-        ) ;
-      }
+        real = zero;
+        img = zero;
 
-      let maxAmp = amp.reduce((a,b) => a  > b ? a : b);
-      amp = amp.map(a => a / maxAmp);
+        let osc = context.createOscillator();
+
+        let a = (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+
+        real[n] = a;
+
+        let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
+
+        osc.setPeriodicWave(wave);
+        osc.frequency.value = this.freq;
+
+        oscArray.push(osc);
+
+      }
 
       let T = context.currentTime;
+      let fadeTime = 2;
 
-      for (let n = 0; n < N; n++) {
-        if(amp[n] > 0.01) {
-          tone(440 * n, amp[n], T, 1 - n/(N+1));
-        }
+      for (let i = 0; i < N; i++) {
+        fade(oscArray[i], T , fadeTime/(i+1));
       }
+
+      /*
+      osc.connect(context.destination);
+
+      let T = context.currentTime;
+      osc.start(T);
+      osc.stop(T+2);
+      */
+
     }
   },
 
@@ -279,6 +303,9 @@ let app = new Vue({
 
 
   data: {
+
+    freq: 350,
+
     stringnormalmodes: {
       n: 1,
       a: 1,
