@@ -11,8 +11,8 @@ startAudio();
 
 let epsilon = 1e-6;
 
-function fade(osc, T, fadeTime) {
-    let tau = fadeTime * Math.log(0.4/epsilon);
+function fade(osc, T, fadeTime, peakGain) {
+    let tau = fadeTime * Math.log(peakGain/epsilon);
 
     let attackTime = 0.1;
 
@@ -20,7 +20,7 @@ function fade(osc, T, fadeTime) {
     osc.connect(gain);
 
     gain.gain.setValueAtTime(0, T);
-    gain.gain.linearRampToValueAtTime(0.4, T + attackTime);
+    gain.gain.linearRampToValueAtTime(peakGain, T + attackTime);
     gain.connect(context.destination);
 
     osc.start(T);
@@ -44,7 +44,7 @@ function tone(freq, amp, T, fadeTime=1) {
 
     osc.start(T);
     setTimeout((fadeOut(gain, T, fadeTime)), 100);
-    osc.stop(T + 0.1 + fadeTime * Math.log(0.4/epsilon));
+    osc.stop(T + 0.1 + fadeTime * Math.log(peakGain/epsilon));
 }
 
 function fadeOut(gain, T, fadeTime) {

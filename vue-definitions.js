@@ -249,42 +249,99 @@ let app = new Vue({
 
   methods: {
     playPluckedString() {
+
       let l = parseFloat(this.pluckedstring.l);
       let N = parseInt(this.pluckedstring.N);
 
+      let ampArray = [];
+      for (let n = 1; n <= N; n++) {
+
+        let a = (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+
+        if (Math.abs(a) > epsilon) {
+          ampArray.push(a);
+        } else {
+          ampArray.push(0);
+        }
+      }
+
+      // normalize amplitude array
+      let sum = ampArray.reduce((a,b) => a + b);
+      ampArray = ampArray.map(e => e/sum);
+
+      this.playString(ampArray);
+
+    },
+
+    playPluckedString2() {
+
+      let l = parseFloat(this.pluckedstring.l);
+      let N = parseInt(this.pluckedstring.N);
+
+      let ampArray = [];
+      for (let n = 1; n <= N; n++) {
+        let k = n * Math.PI;
+        let a = Math.pow(-1,n) * k * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+
+        if (Math.abs(a) > epsilon) {
+          ampArray.push(a);
+        } else {
+          ampArray.push(0);
+        }
+      }
+
+      // normalize amplitude array
+      let sum = ampArray.reduce((a,b) => a + b);
+      ampArray = ampArray.map(e => e/sum);
+
+      this.playString(ampArray);
+
+    },
+
+    playString(ampArray) {
+
+      let N = parseInt(this.pluckedstring.N);
 
       let zero = new Float32Array(N+1).fill(0);
       let real;
       let img;
 
       let oscArray = [];
-      let waveArray = [];
+      let indexArray = [];
 
+      let waveArray = [];
       for (let n = 1; n <= N; n++) {
 
-        real = zero;
-        img = zero;
+        let a = ampArray[n-1];
 
-        let osc = context.createOscillator();
+        if (Math.abs(a) > epsilon) {
+          real = zero;
+          img = zero;
 
-        let a = (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+          let osc = context.createOscillator();
 
-        real[n] = a;
+          real[n] = a;
+          let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
 
-        let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
+          osc.setPeriodicWave(wave);
+          osc.frequency.value = this.freq;
 
-        osc.setPeriodicWave(wave);
-        osc.frequency.value = this.freq;
-
-        oscArray.push(osc);
-
+          oscArray.push({
+            osc: osc,
+            index: n
+          });
+        }
       }
 
       let T = context.currentTime;
       let fadeTime = 2;
 
-      for (let i = 0; i < N; i++) {
-        fade(oscArray[i], T , fadeTime/(i+1));
+      for (let osc of oscArray) {
+        let i = osc.index;
+        let o = osc.osc;
+        let maxGain = Math.min(0.5, 1/N);
+
+        fade(o, T , fadeTime/(i+1), maxGain);
       }
 
       /*
@@ -313,7 +370,7 @@ let app = new Vue({
     },
 
     pluckedstring: {
-      N: 20,
+      N: 10,
       l: 0.5
     },
 

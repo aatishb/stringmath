@@ -26,7 +26,7 @@ function sketch(parent) { // we pass the sketch data from the parent
 
         p.beginShape();
 
-        for (let x=0; x<=1.005; x+=0.005) {
+        for (let x=0; x<=1.001; x+=0.001) {
 
           let y = 0;
           let vars = Object.values(parent.data.vars);
