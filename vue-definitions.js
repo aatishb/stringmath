@@ -266,8 +266,8 @@ let app = new Vue({
       }
 
       // normalize amplitude array
-      let sum = ampArray.reduce((a,b) => a + b);
-      ampArray = ampArray.map(e => e/sum);
+      let sumSq = ampArray.map(e => e*e).reduce((a,b) => a + b);
+      ampArray = ampArray.map(e => e/Math.sqrt(sumSq));
 
       this.playString(ampArray);
 
@@ -291,8 +291,8 @@ let app = new Vue({
       }
 
       // normalize amplitude array
-      let sum = ampArray.reduce((a,b) => a + b);
-      ampArray = ampArray.map(e => e/sum);
+      let sumSq = ampArray.map(e => e*e).reduce((a,b) => a + b);
+      ampArray = ampArray.map(e => e/Math.sqrt(sumSq));
 
       this.playString(ampArray);
 
