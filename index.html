@@ -38,13 +38,13 @@ This can be written more concisely as
 
 $$\ddot{y} = c^2 y''$$
 
-In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point. The reason this is an 'ideal' string is that it ignores energy dissipation from friction, and it also ignores any stiffness in the string.
+In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point. For now, we're ignoring energy dissipation from friction and any stiffness in the string, which makes this an **ideal**ized string.
 
-In the equation, x refers to the position along the string, and t refers to time. $y(x,t)$ is a function of position and time, and tells us the displacement (height) of a point that's a distance $x$ along the string, at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
+$y(x,t)$ is a function of position and time, and it tells us the displacement (i.e. height) of a point that's a distance $x$ along the string, at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
 
 A general solution to the wave equation is:
 
-$$ y = (A \sin (k x) + B \cos (k x)) (C \sin(\omega t) + D \cos(\omega t)) $$
+$$ y = (a \sin (k x) + b \cos (k x)) (c \sin(\omega t) + d \cos(\omega t)) $$
 
 This works because $y'' = - k^2 y $ & $\ddot{y} = -\omega^2 y$, so the wave equation is satisfied so long as $\omega = \pm c k$.
 
@@ -52,7 +52,7 @@ The next step is to impose the boundary conditions of the string. The string is 
 $$ y(0,t) = 0 $$
 $$ y(L,t) = 0 $$
 
-Applying the first condition tell us that $B=0$, while applying the second condition tells us that $k = \frac{n\pi}{L}$ for $n = 1,2,3,...$
+Applying the first condition tell us that $b=0$, while applying the second condition tells us that $k = \frac{n\pi}{L}$ for $n = 1,2,3,...$
 
 So, our general solution becomes
 
@@ -79,7 +79,7 @@ function graph(x, t, n, a, b) {
 <md>
 Every normal mode is a possible way in which the string can vibrate. As we increase $n$, the oscillations become more energetic as the string oscillates more rapidly. The frequency of vibration of each normal mode $f_n$ is related to $\omega_n$ by $f_n = \frac{\omega_n}{2 \pi} = n \frac{c}{2 L} = n f$.
 
-Notice that just by requiring the string to be fixed at its ends, the wave equation ensures that the string can only vibrate at a certain allowable set of frequencies (f, 2f, 3f, ...). The allowed vibration frequencies for the ideal string are integer multiples of a fundamental frequency f. Together, these frequencies are known as the *harmonics* of the string.
+Notice that just by requiring the string to be fixed at its ends, the wave equation ensures that the string can only vibrate at a certain allowable set of frequencies (f, 2f, 3f, ...). The ideal string can only vibrate at integer multiples of a fundamental frequency f. Together, these frequencies are known as the *harmonics* of the string.
 
 We can add different normal modes together to get more complicated vibration patterns. Just for fun, in the interactive below you can drag the sliders to mix in different amounts of the first 6 normal modes (here we're adjusting the A coefficients, and the B coefficients are set to zero). When you're done, turn up the speed slider to unfreeze the wave and watch the ensuing wave motion.
 </md>
@@ -149,17 +149,17 @@ Let's assume that we know the initial shape of the string, which we represent by
 
 $$ y(x,0) = f(x) $$
 
-Expanding out $y$ and substituting $k_n = \frac{n \pi}{L}$, we arrive at,
+Expanding out $y$ and substituting $k_n = \frac{n \pi}{L}$, we arrive at
 
 $$ f(x) = \sum_{n=1}^\infty A_n \sin (\frac{n \pi x}{L}) $$
 
-To solve this equation, we need to find the values of all the $A_n$. We can do so using the classic [Fourier trick](https://books.google.com/books?id=Kh4xDwAAQBAJ&pg=PA134&dq=Fourier%27s+trick+griffiths&hl=en&newbks=1&newbks_redir=0&sa=X&ved=2ahUKEwib2eD80_blAhWLjFkKHY8YB9oQ6AEwAHoECAQQAg#v=onepage&q&f=false)
+where we want to solve for $A_n$. We can do so using the classic [Fourier trick](https://books.google.com/books?id=Kh4xDwAAQBAJ&pg=PA134&dq=Fourier%27s+trick+griffiths&hl=en&newbks=1&newbks_redir=0&sa=X&ved=2ahUKEwib2eD80_blAhWLjFkKHY8YB9oQ6AEwAHoECAQQAg#v=onepage&q&f=false)
 
 $$ \int_{0}^{L} \sin (\frac{n \pi x}{L}) \sin (\frac{m \pi x}{L}) = \frac{L}{2} \delta_{m,n}$$
 
 where $\delta_{m,n} = 1$ if $m=n$, and zero otherwise.
 
-Applying this identity and a little algebra, we end up with an equation for the A coefficients.
+Applying this identity and a little algebra, we end up with an equation for $A_n$.
 
 $$ A_n =  \frac{2}{L} \int_{0}^{L} f(x) \sin (\frac{n \pi x}{L}) dx$$
 
@@ -217,12 +217,9 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-The animation above shows the motion of the string following the initial pluck.
-
-Let's use this to make sound. To extract the waveform $w(t)$, we want only the time dependent part of the string motion.
+The animation above shows the motion of the string following the initial pluck. For the audio waveform $w(t)$, we want only the time dependent part of the string motion.
 
 $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
-
 
 </md>
 
@@ -248,10 +245,11 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  To make sound with this waveform, we first need to make a few changes.
+  The interactive below shows you the waveform for the plucked string. To make sound with this waveform, we first need to do a couple of things.
 
   - Rewrite $\omega_n$ in terms of the fundamental frequency of the tone, so $\omega_n = 2 \pi n f$.
-  - Let's also assume that each oscillator decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). Following [this reference](http://large.stanford.edu/courses/2007/ph210/pelc2/), we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
+  - Let's assume that each sine or cosine function decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). Following [this reference](http://large.stanford.edu/courses/2007/ph210/pelc2/), we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
+
 
   Making these changes, we end up with the following waveform.
 
@@ -338,7 +336,7 @@ function graph(x, t, N, l) {
   y(x,0) = \sum_{n=1}^{\infty} A_n \sin (k_n x) = 0
   $$
 
-  which is only possible in general if $A_n = 0$. So, the general solution simplifies to
+  which is only possible in general if $A_n = 0$. So, the general solution becomes
 
   $$
   y = \sum_{n=1}^{\infty} B_n \sin (k_n x) \sin(\omega_n t)

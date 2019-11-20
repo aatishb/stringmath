@@ -322,7 +322,7 @@ let app = new Vue({
       }
 
       let T = context.currentTime;
-      let fadeTime = 2;
+      let fadeTime = 1;
 
       let maxGain = 0.5/sum;
 
