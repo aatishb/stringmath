@@ -19,18 +19,17 @@ function fade(osc, T, fadeTime, peakGain) {
     let gain = context.createGain();
     osc.connect(gain);
 
-    gain.gain.setValueAtTime(0, T);
+    gain.gain.setValueAtTime(peakGain, T);
     gain.gain.linearRampToValueAtTime(peakGain, T + attackTime);
     gain.connect(context.destination);
 
     osc.start(T);
     setTimeout((fadeOut(gain, T, tau)), attackTime * 1000);
-    osc.stop(T + 0.1 + tau);
+    osc.stop(T + attackTime + tau);
 
 }
 
-function tone(freq, amp, T, fadeTime=1) {
-
+function tone(freq, amp, T, fadeTime) {
     var osc = context.createOscillator();
     osc.type = "sine";
     osc.frequency.value = freq;
@@ -38,13 +37,16 @@ function tone(freq, amp, T, fadeTime=1) {
     var gain = context.createGain();
     osc.connect(gain);
 
+    let tau = fadeTime * Math.log(amp/epsilon);
+    let attackTime = 0.1;
+
     gain.gain.setValueAtTime(0, T);
     gain.gain.linearRampToValueAtTime(amp, T + 0.1);
     gain.connect(context.destination);
 
     osc.start(T);
-    setTimeout((fadeOut(gain, T, fadeTime)), 100);
-    osc.stop(T + 0.1 + fadeTime * Math.log(peakGain/epsilon));
+    setTimeout((fadeOut(gain,T, tau)), attackTime * 1000);
+    osc.stop(T + attackTime + tau);
 }
 
 function fadeOut(gain, T, fadeTime) {

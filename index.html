@@ -251,11 +251,11 @@ function graph(x, t, N, l) {
   To make sound with this waveform, we first need to make a few changes.
 
   - Rewrite $\omega_n$ in terms of the fundamental frequency of the tone, so $\omega_n = 2 \pi n f$.
-  - Add in an exponential fade with some fade time $\tau$
+  - Let's also assume that each oscillator decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). Following [this reference](http://large.stanford.edu/courses/2007/ph210/pelc2/), we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
 
   Making these changes, we end up with the following waveform.
 
-  $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{  - t / \tau }$$
+  $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{ - n t / \tau }$$
 
   We can synthesize this kind of a sum using using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function. Here's what this sounds like.
 </md>

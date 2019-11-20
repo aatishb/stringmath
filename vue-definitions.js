@@ -282,29 +282,56 @@ let app = new Vue({
       this.playString(e=>0, this.pluckedString2);
     },
 
-
     playString(sinAmpFn, cosAmpFn) {
       let l = parseFloat(this.string.l);
       let N = parseInt(this.string.N);
 
-      let real = new Float32Array(N).fill(0);
-      let img = new Float32Array(N).fill(0);
+      let zero = new Float32Array(N+1).fill(0);
+      let real;
+      let img;
+
+      let sum = 0;
+
+      let oscArray = [];
 
       for (let n = 1; n <= N; n++) {
-        real[n-1] = cosAmpFn(n,l);
-        img[n-1] = sinAmpFn(n,l);
+        real = zero.slice();
+        img = zero.slice();
+
+        real[n] = cosAmpFn(n,l);
+        img[n] = sinAmpFn(n,l);
+
+        let osc = context.createOscillator();
+        let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
+
+        osc.setPeriodicWave(wave);
+        osc.frequency.value = this.freq;
+
+        if( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
+
+          sum += Math.abs(real[n]);
+          sum += Math.abs(img[n]);
+
+          oscArray.push({
+            osc: osc,
+            index: n
+          });
+        }
+
+
       }
 
-      let osc = context.createOscillator();
-      let wave = context.createPeriodicWave(real, img);
-
-      osc.setPeriodicWave(wave);
-      osc.frequency.value = this.freq;
-
       let T = context.currentTime;
-      let fadeTime = 0.5;
-      let maxGain = 0.5;
-      fade(osc, T , fadeTime, maxGain);
+      let fadeTime = 2;
+
+      let maxGain = 0.5/sum;
+
+      for (let osc of oscArray) {
+        let n = osc.index;
+        let o = osc.osc;
+
+        fade(o, T + 0.1, fadeTime/n, maxGain);
+      }
 
       /*
       osc.connect(context.destination);
