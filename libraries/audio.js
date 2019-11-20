@@ -2,6 +2,8 @@ let context;
 
 function startAudio() {
   if (!context) {
+    let AudioContext = window.AudioContext   // Default
+              || window.webkitAudioContext;  // Safari and old versions of Chrome
     context = new AudioContext();
   }
 
