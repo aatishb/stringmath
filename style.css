@@ -58,3 +58,23 @@ h3 {
 p {
   text-align: justify;
 }
+
+.button {
+  background-color: #008CBA;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-family: 'Unica One', sans-serif;
+  font-size: 1.5rem;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.button:hover {
+  background-color: white; /* Green */
+  color: #008CBA;
+}
