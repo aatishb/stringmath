@@ -26,7 +26,7 @@
 # Making Music with Math
 ### A Guide to Synthesizing Sounds with the Wave Equation
 
-A vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation). This equation governs how each part of the string vibrates. Using this equation, it's possible to simulate the motion of a vibrating string and generate musical tones, such as that of a plucked guitar string or a struck piano string. In this post we'll explain how you can do this.
+A vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation) for an ideal string. This equation tells us how each part of a string will move at each moment in time. Using this equation, it's possible to simulate the motion of a vibrating string and generate musical tones, such as that of a plucked or a struck string. In this post we'll explain how you can do this.
 
 ## The Ideal String
 
@@ -38,9 +38,9 @@ This can be written more concisely as
 
 $$\ddot{y} = c^2 y''$$
 
-In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point.
+In words, this is saying that the vertical acceleration of any point along the string is proportional to the curvature at that point. The reason this is an 'ideal' string is that it ignores energy dissipation from friction, and it also ignores any stiffness in the string.
 
-Here, x refers to the position along the string, and t refers to time. $y(x,t)$ is a function of position and time, and tells us the displacement (height) of a point a distance $x$ along the string at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
+In the equation, x refers to the position along the string, and t refers to time. $y(x,t)$ is a function of position and time, and tells us the displacement (height) of a point that's a distance $x$ along the string, at a particular moment in time $t$. So this function captures the motion of the entire string over time. Finally, $c$ is the speed of the travelling wave moving along the string.
 
 A general solution to the wave equation is:
 
@@ -81,7 +81,7 @@ Every normal mode is a possible way in which the string can vibrate. As we incre
 
 Notice that just by requiring the string to be fixed at its ends, the wave equation ensures that the string can only vibrate at a certain allowable set of frequencies (f, 2f, 3f, ...). The allowed vibration frequencies for the ideal string are integer multiples of a fundamental frequency f. Together, these frequencies are known as the *harmonics* of the string.
 
-We can add different normal modes together to get more complicated vibration patterns. Just for fun, in the interactive below you can drag the sliders to mix in different amounts of the first 6 normal modes (we're adjusting the A parameter here, the B parameter is set to zero). When you're done, turn up the speed slider to unfreeze the wave and watch the ensuing wave motion.
+We can add different normal modes together to get more complicated vibration patterns. Just for fun, in the interactive below you can drag the sliders to mix in different amounts of the first 6 normal modes (here we're adjusting the A coefficients, and the B coefficients are set to zero). When you're done, turn up the speed slider to unfreeze the wave and watch the ensuing wave motion.
 </md>
 
 <animation :vars="mixingmodes" :sliders="{A1: ['1st mode', 0, 1, 0.01], A2: ['2nd mode', 0, 1, 0.01], A3: ['3rd mode', 0, 1, 0.01], A4: ['4th mode', 0, 1, 0.01], A5: ['5th mode', 0, 1, 0.01], A6: ['6th mode', 0, 0.5, 0.01], c: ['Speed', 0, 1, 0.01]}" :code="`
@@ -120,9 +120,7 @@ $$
 
 where $k_n = \frac{n \pi}{L}$, $\omega_n = c \frac{n \pi}{L}$, and $c$ is the speed of the travelling wave in the string.
 
-Solving the wave equation now amounts to working out the coefficients $A_n$ and $B_n$. Once we know these coefficients, plugging them into the equation above gives us the motion of every point on the string for all time.
-
-Every kind of waveform that you might be familiar with, from a square wave to a triangle wave to a sawtooth wave can be represented as a certain set of these $A_n$ and $B_n$ coefficients. (For example, the coefficients for these standard waveforms are [provided here](https://webaudio.github.io/web-audio-api/#oscillator-coefficients).)
+**So solving the wave equation in a particular situation amounts to working out the coefficients $A_n$ and $B_n$. Once we know these coefficients, plugging them into the equation above gives us the motion of every point on the string for all time.**
 
 To obtain these coefficients, we need to know something more about the string. In particular, we need to know the initial position and initial velocity of the string, which we can write as $f(x)$ and $g(x)$.
 
@@ -140,10 +138,7 @@ $$ \dot{y}(x,0) = 0 $$
 A little math shows that
 
 $$
-\begin{aligned}
-\dot{y}(x,0) &= \sum_{n=1}^\infty \sin (k_n x) \big( -A_n \omega_n \sin(0) + B_n \omega_n \cos(0) \big) \\
-&= \sum_{n=1}^\infty \sin (k_n x) B_n \omega_n
-\end{aligned}
+\dot{y}(x,0) = \sum_{n=1}^\infty B_n \omega_n \sin (k_n x)
 $$
 
 For this to be zero, it must be the case that $B_n = 0$ for all $n$. So our general solution for the case of the plucked string reduces to
@@ -154,7 +149,7 @@ Let's assume that we know the initial shape of the string, which we represent by
 
 $$ y(x,0) = f(x) $$
 
-So,
+Expanding out $y$ and substituting $k_n = \frac{n \pi}{L}$, we arrive at,
 
 $$ f(x) = \sum_{n=1}^\infty A_n \sin (\frac{n \pi x}{L}) $$
 
@@ -164,7 +159,7 @@ $$ \int_{0}^{L} \sin (\frac{n \pi x}{L}) \sin (\frac{m \pi x}{L}) = \frac{L}{2} 
 
 where $\delta_{m,n} = 1$ if $m=n$, and zero otherwise.
 
-Applying this identity and a little algebra, we end up with an equation for the coefficients (known as Fourier coefficients).
+Applying this identity and a little algebra, we end up with an equation for the A coefficients.
 
 $$ A_n =  \frac{2}{L} \int_{0}^{L} f(x) \sin (\frac{n \pi x}{L}) dx$$
 
@@ -182,7 +177,7 @@ $$
 Here's what this function for the plucked guitar string shape looks like.</md>
 
 
-<animation :vars="trianglecurve" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
+<animation :vars="trianglecurve" :sliders="{l: ['Pluck location', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
 
 function graph(x, t, l, h) {
   return x <= l ? h * x/l : h * (1 - x) / (1-l);
@@ -201,7 +196,7 @@ $$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -253,12 +248,9 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  Let's make sound with this. To do this, we first need to make a few changes.
+  To make sound with this waveform, we first need to make a few changes.
 
   - Rewrite $\omega_n$ in terms of the fundamental frequency of the tone, so $\omega_n = 2 \pi n f$.
-
-  - Each term in the waveform can be represented with an oscillator using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function.
-
   - Let's also assume that each oscillator decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). For example, we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
 
 
@@ -266,7 +258,7 @@ function graph(x, t, N, l) {
 
   $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{  - n t / \tau }$$
 
-  Here's what this sounds like.
+  Each term in the waveform can be represented with an oscillator using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function. Here's what this sounds like.
 </md>
 
 
@@ -319,7 +311,7 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  Once again, we can apply use WebAudio oscillators to synthesize this sound, and apply an exponential decay to each oscillator to fade the sound.
+  Once again, we can synthesize this sound.
 </md>
 
 <animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
@@ -334,7 +326,188 @@ function graph(x, t, N, l) {
 
 <md>
   In this case, the sound has a harsher attack. When plucked at the center, the waveform resembles a square wave.
+
+  ## The Struck Ideal String
+
+  In the struck string, the string is initially at rest, but is given an initial velocity spike. So,
+
+  $$y(x,0) = 0$$
+
+  Expanding this out,
+
+  $$
+  y(x,0) = \sum_{n=1}^{\infty} A_n \sin (k_n x) = 0
+  $$
+
+  which is only possible in general if $A_n = 0$. So, the general solution simplifies to
+
+  $$
+  y = \sum_{n=1}^{\infty} B_n \sin (k_n x) \sin(\omega_n t)
+  $$
+
+  where $k_n = \frac{n \pi}{L}$ and $\omega_n = c \frac{n \pi}{L}$.
+
+  The solution boils down to finding $B_n$. To do this, we need to use the fact that we know the initial velocity distribution $g(x)$.
+
+  $$
+  g(x) = \dot{y} (x,0)
+  $$
+
+  Taking the time derivative and substituting in $k_n$, we arrive at
+
+  $$
+  g(x) = \sum_{n=1}^{\infty} B_n \omega_n \sin (\frac{n \pi x}{L})
+  $$
+
+  As before, we can solve this integral using Fourier's trick.
+
+  $$ \int_{0}^{L} \sin (\frac{n \pi x}{L}) \sin (\frac{m \pi x}{L}) = \frac{L}{2} \delta_{m,n}$$
+
+  This results in the solution
+
+  $$
+  B_n = \frac{2}{\omega_n L} \int_{0}^{L} g(x) \sin (\frac{n \pi x}{L}) dx
+  $$
+
+  As an example, let's say that we strike the string with a velocity impulse concetrated at a point l along the string. This would be like striking the string with the edge of a knife. In that case, we can model the initial velocity as a delta function.
+
+  $$ g(x) = v \delta (x-l) $$
+
+  Where $v$ is the speed with which the string is struck, and the delta function $\delta (x-l)$ has the property that $ \int_{0}^{L} f(x) \delta (x - l) dx = f(l) $ if $0 \leq l \leq L$.
+
+  Performing the integral, we arrive at the solution
+
+  $$
+  B_n = \frac{2 v_0}{\omega_n} \sin (\frac{n \pi l}{L})
+  $$
+
+  Let's animate this solution for the first $N$ terms in the sum.
+
+  $$ y(x,t) = \sum_{n=1}^{N} B_n \sin (k_n x) \sin(\omega_n t)$$
+
+
 </md>
+
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+  let c = 0.375;
+  let v = 0.5;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+
+    y += a * Math.sin(k * x) * Math.sin(w * t);
+
+  }
+
+  return y;
+}
+
+`"></animation>
+
+<md>
+  If you strike the string near one of its ends, you can watch the pulse propagating along the string, and reflecting off the ends.
+
+  Once again, let's visualize the waveform. We can obtain the waveform from the time-dependent part of the string motion.
+
+  $$
+    w(t) = \sum_{n=1}^{N} B_n \sin(\omega_n t)
+  $$
+</md>
+
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+  let c = 0.375;
+  let v = 0.5;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+
+    y += a * Math.sin(w * x * 20);
+
+  }
+
+  return y/1.5;
+}
+
+`"></animation>
+
+<md>
+  Here's what this sounds like.
+</md>
+
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+
+  <div class="center-inline">
+    <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
+    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+  </div>
+
+  <button @click="playStruckString" style="margin-top: 5px;">Play Sound</button>
+</animation>
+
+
+<md>
+  Let's also try a different approach to creating the waveform. Suppose that the waveform is given by the slope of the string at the end, i.e.
+
+  $$
+  \begin{aligned}
+  w(t) &= y'(L,t) \\
+  &= \sum_{n=1}^{\infty} B_n k_n \cos (n \pi) \sin(\omega_n t) \\
+  &= \sum_{n=1}^{\infty} (-1)^{n} B_n k_n \sin(\omega_n t)
+  \end{aligned}
+  $$
+
+  Let's take a look at what this waveform looks like.
+</md>
+
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+  let c = 0.375;
+  let v = 0.5;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+
+    y += Math.pow(-1, n) * a * k * Math.sin(w * x * 20);
+
+  }
+
+  return y/5;
+}
+
+`"></animation>
+
+<md>
+  And this is what it sounds like.
+</md>
+
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}">
+
+  <div class="center-inline">
+    <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
+    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+  </div>
+
+  <button @click="playStruckString2" style="margin-top: 5px;">Play Sound</button>
+</animation>
+
+<md>
+  Once again, the second method has a harsher attack.
+</md>
+
 
 
 </div>

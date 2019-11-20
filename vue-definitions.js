@@ -248,6 +248,56 @@ let app = new Vue({
   el: '#root',
 
   methods: {
+    playStruckString() {
+
+      let l = parseFloat(this.struckstring.l);
+      let N = parseInt(this.struckstring.N);
+
+      let ampArray = [];
+      for (let n = 1; n <= N; n++) {
+
+        let a = 2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+
+        if (Math.abs(a) > epsilon) {
+          ampArray.push(a);
+        } else {
+          ampArray.push(0);
+        }
+      }
+
+      // normalize amplitude array
+      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
+      ampArray = ampArray.map(e => e/largest);
+
+      this.playString(ampArray, 'cosine');
+
+    },
+
+    playStruckString2() {
+
+      let l = parseFloat(this.struckstring.l);
+      let N = parseInt(this.struckstring.N);
+
+      let ampArray = [];
+      for (let n = 1; n <= N; n++) {
+
+        let k = n * Math.PI;
+        let a = Math.pow(-1,n) * k *2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+
+        if (Math.abs(a) > epsilon) {
+          ampArray.push(a);
+        } else {
+          ampArray.push(0);
+        }
+      }
+
+      // normalize amplitude array
+      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
+      ampArray = ampArray.map(e => e/largest);
+
+      this.playString(ampArray, 'cosine');
+
+    },
     playPluckedString() {
 
       let l = parseFloat(this.pluckedstring.l);
@@ -269,7 +319,7 @@ let app = new Vue({
       let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
       ampArray = ampArray.map(e => e/largest);
 
-      this.playString(ampArray);
+      this.playString(ampArray, 'sine');
 
     },
 
@@ -294,11 +344,11 @@ let app = new Vue({
       let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
       ampArray = ampArray.map(e => e/largest);
 
-      this.playString(ampArray);
+      this.playString(ampArray, 'sine');
 
     },
 
-    playString(ampArray) {
+    playString(ampArray, sineOrCosine) {
       //console.log(ampArray);
 
       let N = parseInt(this.pluckedstring.N);
@@ -321,7 +371,11 @@ let app = new Vue({
 
           let osc = context.createOscillator();
 
-          real[n] = a;
+          if(sineOrCosine == 'sine') {
+            real[n] = a;
+          } else if (sineOrCosine == 'cosine') {
+            img[n] = a;
+          }
           let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
 
           osc.setPeriodicWave(wave);
@@ -340,7 +394,7 @@ let app = new Vue({
       for (let osc of oscArray) {
         let i = osc.index;
         let o = osc.osc;
-        let maxGain = Math.min(0.5, 0.5/N);
+        let maxGain = Math.min(0.5, 1/N);
 
         fade(o, T , fadeTime/(i+1), maxGain);
       }
@@ -372,7 +426,12 @@ let app = new Vue({
 
     pluckedstring: {
       N: 10,
-      l: 0.5
+      l: 0.1
+    },
+
+    struckstring: {
+      N: 10,
+      l: 0.1
     },
 
     mixingmodes: {
