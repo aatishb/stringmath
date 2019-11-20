@@ -70,7 +70,7 @@ function graph(x, t, n, a, b) {
   let c = 0.375;
   let w = c * k;
 
-  return Math.sin(k * x) * (a * Math.sin(w * t) + b * Math.cos(w * t));
+  return Math.sin(k * x) * (a * Math.sin(w * t) + b * Math.cos(w * t))/n;
 }
 
 `">
@@ -196,7 +196,7 @@ $$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -223,7 +223,7 @@ $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
 
@@ -259,14 +259,19 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
-    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button @click="playPluckedString" style="margin-top: 5px;">Play Sound</button>
+  <button @click="playPluckedString" style="margin-top: 5px;">Play String</button>
+
+  <button @click="strumPluckedString([1, 5/4, 3/2])" style="margin-top: 5px;">Strum Major Chord</button>
+
+  <button @click="strumPluckedString([1, 6/5, 3/2])" style="margin-top: 5px;">Strum Minor Chord</button>
+
 </animation>
 
 <md>
@@ -286,7 +291,7 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
 
@@ -311,14 +316,19 @@ function graph(x, t, N, l) {
   Once again, we can synthesize this sound.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
-    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button @click="playPluckedString2" style="margin-top: 5px;">Play Sound</button>
+  <button @click="playPluckedString2" style="margin-top: 5px;">Play String</button>
+
+  <button @click="strumPluckedString2([1, 5/4, 3/2])" style="margin-top: 5px;">Strum Major Chord</button>
+
+  <button @click="strumPluckedString2([1, 6/5, 3/2])" style="margin-top: 5px;">Strum Minor Chord</button>
+
 </animation>
 
 <md>
@@ -385,7 +395,7 @@ function graph(x, t, N, l) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -416,7 +426,7 @@ function graph(x, t, N, l) {
   $$
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -441,14 +451,19 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
-    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button @click="playStruckString" style="margin-top: 5px;">Play Sound</button>
+  <button @click="playStruckString" style="margin-top: 5px;">Play String</button>
+
+  <button @click="strumStruckString([1, 5/4, 3/2])" style="margin-top: 5px;">Strum Major Chord</button>
+
+  <button @click="strumStruckString([1, 6/5, 3/2])" style="margin-top: 5px;">Strum Minor Chord</button>
+
 </animation>
 
 
@@ -468,7 +483,7 @@ function graph(x, t, N, l) {
   Let's take a look at what this waveform looks like.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -493,14 +508,19 @@ function graph(x, t, N, l) {
   And this is what it sounds like.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
-    <input type="range" :min="100" :max="1000" :step="1" v-model.number="freq"></input>
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button @click="playStruckString2" style="margin-top: 5px;">Play Sound</button>
+  <button @click="playStruckString2" style="margin-top: 5px;">Play String</button>
+
+  <button @click="strumStruckString2([1, 5/4, 3/2])" style="margin-top: 5px;">Strum Major Chord</button>
+
+  <button @click="strumStruckString2([1, 6/5, 3/2])" style="margin-top: 5px;">Strum Minor Chord</button>
+
 </animation>
 
 <md>

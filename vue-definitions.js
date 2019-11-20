@@ -267,22 +267,66 @@ let app = new Vue({
     },
 
     playStruckString() {
-      this.playString(this.struckString, e=>0);
+      this.playString(this.freq, 0.1, this.struckString, e=>0);
     },
 
     playStruckString2() {
-      this.playString(this.struckString2, e=>0);
+      this.playString(this.freq, 0.1, this.struckString2, e=>0);
+    },
+
+    strumPluckedString(arr) {
+
+      this.playString(arr[0] * this.freq, 0.1, e=>0, this.pluckedString);
+      this.playString(arr[1] * this.freq, 0.6, e=>0, this.pluckedString);
+      this.playString(arr[2] * this.freq, 1.1, e=>0, this.pluckedString);
+
+      this.playString(arr[0] * this.freq, 1.6, e=>0, this.pluckedString);
+      this.playString(arr[1] * this.freq, 1.7, e=>0, this.pluckedString);
+      this.playString(arr[2] * this.freq, 1.8, e=>0, this.pluckedString);
+    },
+
+    strumStruckString(arr) {
+
+      this.playString(arr[0] * this.freq, 0.1, this.struckString, e=>0);
+      this.playString(arr[1] * this.freq, 0.6, this.struckString, e=>0);
+      this.playString(arr[2] * this.freq, 1.1, this.struckString, e=>0);
+
+      this.playString(arr[0] * this.freq, 1.6, this.struckString, e=>0);
+      this.playString(arr[1] * this.freq, 1.7, this.struckString, e=>0);
+      this.playString(arr[2] * this.freq, 1.8, this.struckString, e=>0);
+    },
+
+    strumPluckedString2(arr) {
+
+      this.playString(arr[0] * this.freq, 0.1, e=>0, this.pluckedString2);
+      this.playString(arr[1] * this.freq, 0.6, e=>0, this.pluckedString2);
+      this.playString(arr[2] * this.freq, 1.1, e=>0, this.pluckedString2);
+
+      this.playString(arr[0] * this.freq, 1.6, e=>0, this.pluckedString2);
+      this.playString(arr[1] * this.freq, 1.7, e=>0, this.pluckedString2);
+      this.playString(arr[2] * this.freq, 1.8, e=>0, this.pluckedString2);
+    },
+
+    strumStruckString2(arr) {
+
+      this.playString(arr[0] * this.freq, 0.1, this.struckString2, e=>0);
+      this.playString(arr[1] * this.freq, 0.6, this.struckString2, e=>0);
+      this.playString(arr[2] * this.freq, 1.1, this.struckString2, e=>0);
+
+      this.playString(arr[0] * this.freq, 1.6, this.struckString2, e=>0);
+      this.playString(arr[1] * this.freq, 1.7, this.struckString2, e=>0);
+      this.playString(arr[2] * this.freq, 1.8, this.struckString2, e=>0);
     },
 
     playPluckedString() {
-      this.playString(e=>0, this.pluckedString);
+      this.playString(this.freq, 0.1, e=>0, this.pluckedString);
     },
 
     playPluckedString2() {
-      this.playString(e=>0, this.pluckedString2);
+      this.playString(this.freq, 0.1, e=>0, this.pluckedString2);
     },
 
-    playString(sinAmpFn, cosAmpFn) {
+    playString(freq, deltaT, sinAmpFn, cosAmpFn) {
       let l = parseFloat(this.string.l);
       let N = parseInt(this.string.N);
 
@@ -305,7 +349,7 @@ let app = new Vue({
         let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
 
         osc.setPeriodicWave(wave);
-        osc.frequency.value = this.freq;
+        osc.frequency.value = freq;
 
         if( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
 
@@ -330,7 +374,7 @@ let app = new Vue({
         let n = osc.index;
         let o = osc.osc;
 
-        fade(o, T + 0.1, fadeTime/n, maxGain);
+        fade(o, T + deltaT, fadeTime/n, maxGain);
       }
 
       /*
