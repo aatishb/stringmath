@@ -196,7 +196,7 @@ $$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -226,7 +226,7 @@ $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
 
@@ -251,18 +251,17 @@ function graph(x, t, N, l) {
   To make sound with this waveform, we first need to make a few changes.
 
   - Rewrite $\omega_n$ in terms of the fundamental frequency of the tone, so $\omega_n = 2 \pi n f$.
-  - Let's also assume that each oscillator decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). For example, we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
-
+  - Add in an exponential fade with some fade time $\tau$
 
   Making these changes, we end up with the following waveform.
 
-  $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{  - n t / \tau }$$
+  $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{  - t / \tau }$$
 
-  Each term in the waveform can be represented with an oscillator using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function. Here's what this sounds like.
+  We can synthesize this kind of a sum using using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function. Here's what this sounds like.
 </md>
 
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -289,7 +288,7 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
 
@@ -314,7 +313,7 @@ function graph(x, t, N, l) {
   Once again, we can synthesize this sound.
 </md>
 
-<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -388,7 +387,7 @@ function graph(x, t, N, l) {
 
 </md>
 
-<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -419,7 +418,7 @@ function graph(x, t, N, l) {
   $$
 </md>
 
-<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -441,10 +440,10 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  Here's what this sounds like.
+  Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -469,7 +468,7 @@ function graph(x, t, N, l) {
   Let's take a look at what this waveform looks like.
 </md>
 
-<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -494,7 +493,7 @@ function graph(x, t, N, l) {
   And this is what it sounds like.
 </md>
 
-<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 15, 1], l: ['Strike location', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;

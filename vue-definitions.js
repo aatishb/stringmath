@@ -248,156 +248,63 @@ let app = new Vue({
   el: '#root',
 
   methods: {
+    struckString(n,l) {
+      return 2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+    },
+
+    struckString2(n,l) {
+      let k = n * Math.PI;
+      return Math.pow(-1,n) * k *2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+    },
+
+    pluckedString(n,l) {
+      return (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+    },
+
+    pluckedString2(n,l) {
+      let k = n * Math.PI;
+      return Math.pow(-1,n) * k * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+    },
+
     playStruckString() {
-
-      let l = parseFloat(this.struckstring.l);
-      let N = parseInt(this.struckstring.N);
-
-      let ampArray = [];
-      for (let n = 1; n <= N; n++) {
-
-        let a = 2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
-
-        if (Math.abs(a) > epsilon) {
-          ampArray.push(a);
-        } else {
-          ampArray.push(0);
-        }
-      }
-
-      // normalize amplitude array
-      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
-      ampArray = ampArray.map(e => e/largest);
-
-      this.playString(ampArray, 'cosine');
-
+      this.playString(this.struckString, e=>0);
     },
 
     playStruckString2() {
-
-      let l = parseFloat(this.struckstring.l);
-      let N = parseInt(this.struckstring.N);
-
-      let ampArray = [];
-      for (let n = 1; n <= N; n++) {
-
-        let k = n * Math.PI;
-        let a = Math.pow(-1,n) * k *2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
-
-        if (Math.abs(a) > epsilon) {
-          ampArray.push(a);
-        } else {
-          ampArray.push(0);
-        }
-      }
-
-      // normalize amplitude array
-      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
-      ampArray = ampArray.map(e => e/largest);
-
-      this.playString(ampArray, 'cosine');
-
+      this.playString(this.struckString2, e=>0);
     },
+
     playPluckedString() {
-
-      let l = parseFloat(this.pluckedstring.l);
-      let N = parseInt(this.pluckedstring.N);
-
-      let ampArray = [];
-      for (let n = 1; n <= N; n++) {
-
-        let a = (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
-
-        if (Math.abs(a) > epsilon) {
-          ampArray.push(a);
-        } else {
-          ampArray.push(0);
-        }
-      }
-
-      // normalize amplitude array
-      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
-      ampArray = ampArray.map(e => e/largest);
-
-      this.playString(ampArray, 'sine');
-
+      this.playString(e=>0, this.pluckedString);
     },
 
     playPluckedString2() {
-
-      let l = parseFloat(this.pluckedstring.l);
-      let N = parseInt(this.pluckedstring.N);
-
-      let ampArray = [];
-      for (let n = 1; n <= N; n++) {
-        let k = n * Math.PI;
-        let a = Math.pow(-1,n) * k * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
-
-        if (Math.abs(a) > epsilon) {
-          ampArray.push(a);
-        } else {
-          ampArray.push(0);
-        }
-      }
-
-      // normalize amplitude array
-      let largest = ampArray.map(e => Math.abs(e)).reduce((a,b) => a > b ? a : b);
-      ampArray = ampArray.map(e => e/largest);
-
-      this.playString(ampArray, 'sine');
-
+      this.playString(e=>0, this.pluckedString2);
     },
 
-    playString(ampArray, sineOrCosine) {
-      //console.log(ampArray);
 
-      let N = parseInt(this.pluckedstring.N);
+    playString(sinAmpFn, cosAmpFn) {
+      let l = parseFloat(this.string.l);
+      let N = parseInt(this.string.N);
 
-      let zero = new Float32Array(N+1).fill(0);
-      let real;
-      let img;
+      let real = new Float32Array(N).fill(0);
+      let img = new Float32Array(N).fill(0);
 
-      let oscArray = [];
-      let indexArray = [];
-
-      let waveArray = [];
       for (let n = 1; n <= N; n++) {
-
-        let a = ampArray[n-1];
-
-        if (Math.abs(a) > epsilon) {
-          real = zero;
-          img = zero;
-
-          let osc = context.createOscillator();
-
-          if(sineOrCosine == 'sine') {
-            real[n] = a;
-          } else if (sineOrCosine == 'cosine') {
-            img[n] = a;
-          }
-          let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
-
-          osc.setPeriodicWave(wave);
-          osc.frequency.value = this.freq;
-
-          oscArray.push({
-            osc: osc,
-            index: n
-          });
-        }
+        real[n-1] = cosAmpFn(n,l);
+        img[n-1] = sinAmpFn(n,l);
       }
+
+      let osc = context.createOscillator();
+      let wave = context.createPeriodicWave(real, img);
+
+      osc.setPeriodicWave(wave);
+      osc.frequency.value = this.freq;
 
       let T = context.currentTime;
-      let fadeTime = 2;
-
-      for (let osc of oscArray) {
-        let i = osc.index;
-        let o = osc.osc;
-        let maxGain = Math.min(0.5, 1/N);
-
-        fade(o, T , fadeTime/(i+1), maxGain);
-      }
+      let fadeTime = 0.5;
+      let maxGain = 0.5;
+      fade(osc, T , fadeTime, maxGain);
 
       /*
       osc.connect(context.destination);
@@ -416,7 +323,7 @@ let app = new Vue({
 
   data: {
 
-    freq: 350,
+    freq: 220,
 
     stringnormalmodes: {
       n: 1,
@@ -424,12 +331,7 @@ let app = new Vue({
       b: 0
     },
 
-    pluckedstring: {
-      N: 10,
-      l: 0.1
-    },
-
-    struckstring: {
+    string: {
       N: 10,
       l: 0.1
     },
