@@ -258,12 +258,12 @@ let app = new Vue({
     },
 
     pluckedString(n,l) {
-      return (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+      return (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
     },
 
     pluckedString2(n,l) {
       let k = n * Math.PI;
-      return Math.pow(-1,n) * k * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI)) / Math.pow((n * Math.PI),2);
+      return Math.pow(-1,n) * k * (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
     },
 
     playStruckString() {

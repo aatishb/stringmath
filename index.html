@@ -170,7 +170,7 @@ Let's try an example. Say that the string is plucked at a length $l$ along the s
 $$
 f(x) = \begin{cases}
    h \frac{x}{l} & \text{if } x \leq l \\
-   h (1 - \frac{x}{L})\frac{L}{L-l} & \text{if } l < x \leq L
+   h \frac{L - x}{L - l} & \text{if } l < x \leq L
 \end{cases}
 $$
 
@@ -188,7 +188,7 @@ function graph(x, t, l, h) {
 <md>
 We can plug this function into to our integral for $A_n$, and use a tool like Wolfram Alpha to solve the integral. The [solution](https://www.wolframalpha.com/input/?i=%282%2FL%29*%28Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*x%2Fl%2C%7Bx%2C0%2Cl%7D%5D+%2B+Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*%281-x%2FL%29*%28L%2F%28L-l%29%29%2C%7Bx%2Cl%2CL%7D%5D%29)  is
 
-$$ A_n = \frac{1}{n^2 \pi^2} \frac{2 h}{l (1-\frac{l}{L})} \big( L \sin(\frac{n \pi l}{L}) - l \sin (n \pi)\big)$$
+$$ A_n = \frac{1}{n^2 \pi^2} \frac{2 h L^2}{l (L- l)}  \sin(\frac{n \pi l}{L})$$
 
 Let's animate this solution for the first $N$ terms in the sum.
 
@@ -205,7 +205,7 @@ function graph(x, t, N, l) {
   for (let n=1; n<=N; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI));
+    let a = (1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
 
     y += a * Math.sin(k * x) * Math.cos(w * t);
 
@@ -233,7 +233,7 @@ function graph(x, t, N, l) {
   for (let n=1; n<=N; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (1/Math.pow((n * Math.PI),2)) * (2/(l * (1-l))) * (Math.sin(n * Math.PI * l) - l * Math.sin(n * Math.PI));
+    let a = (1/Math.pow((n * Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
 
     y += a * Math.cos(w * x * 20);
 
