@@ -1,3 +1,80 @@
+Vue.component('sound', {
+
+  template: `
+    <div>
+      <button class="button" @click="playString(1, 0.1)" style="margin-top: 5px;">PLAY</button>
+      <button class="button" @click="strum([1, 5/4, 3/2])" style="margin-top: 5px;">STRUM MAJOR CHORD</button>
+      <button class="button" @click="strum([1, 6/5, 3/2])" style="margin-top: 5px;">STRUM MINOR CHORD</button>
+    </div>
+  `,
+
+  props: ['sin', 'cos', 'freq', 'N'],
+
+  methods: {
+    strum(arr) {
+      this.playString(arr[0], 0.1);
+      this.playString(arr[1], 0.6);
+      this.playString(arr[2], 1.1);
+
+      this.playString(arr[0], 1.6);
+      this.playString(arr[1], 1.7);
+      this.playString(arr[2], 1.8);
+    },
+
+    playString(freqMultiplier, deltaT) {
+      let N = this.N;
+
+      let zero = new Float32Array(N+1).fill(0);
+
+      let real;
+      let img;
+
+      let sum = 0;
+
+      let oscArray = [];
+
+      for (let n = 1; n <= N; n++) {
+        real = zero.slice();
+        img = zero.slice();
+
+        real[n] = this.cos ? this.cos(n) : 0;
+        img[n] = this.sin ? this.sin(n) : 0;
+
+        let osc = context.createOscillator();
+        let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
+
+        osc.setPeriodicWave(wave);
+        osc.frequency.value = this.freq * freqMultiplier;
+
+        if( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
+
+          sum += Math.abs(real[n]);
+          sum += Math.abs(img[n]);
+
+          oscArray.push({
+            osc: osc,
+            index: n
+          });
+        }
+      }
+
+      let T = context.currentTime;
+      let fadeTime = 1;
+
+      let maxGain = 0.5/sum;
+
+      for (let osc of oscArray) {
+        let n = osc.index;
+        let o = osc.osc;
+
+        fade(o, T + deltaT, fadeTime/n, maxGain);
+      }
+
+    }
+  }
+
+}),
+
 Vue.component('animation', {
 
   template: `
@@ -248,147 +325,27 @@ let app = new Vue({
   el: '#root',
 
   methods: {
-    struckString(n,l) {
-      return 2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+
+    struckString(n) {
+      let l = this.string.l;
+      return Math.sin(n * Math.PI * l)/(Math.PI * n);
     },
 
-    struckString2(n,l) {
-      let k = n * Math.PI;
-      return Math.pow(-1,n) * k *2 * Math.sin(n * Math.PI * l)/(2 * Math.PI * n);
+    struckStringFW(n) {
+      let l = this.hammercurve.l;
+      let d = this.hammercurve.d;
+      return 2 * Math.sin(n * Math.PI * l) * Math.sin(n * Math.PI * d/2) / Math.pow((Math.PI * n),2);
     },
 
-    pluckedString(n,l) {
+    pluckedString(n) {
+      let l = this.string.l;
       return (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
     },
 
-    pluckedString2(n,l) {
-      let k = n * Math.PI;
-      return Math.pow(-1,n) * k * (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
-    },
-
-    playStruckString() {
-      this.playString(this.freq, 0.1, this.struckString, e=>0);
-    },
-
-    playStruckString2() {
-      this.playString(this.freq, 0.1, this.struckString2, e=>0);
-    },
-
-    strumPluckedString(arr) {
-
-      this.playString(arr[0] * this.freq, 0.1, e=>0, this.pluckedString);
-      this.playString(arr[1] * this.freq, 0.6, e=>0, this.pluckedString);
-      this.playString(arr[2] * this.freq, 1.1, e=>0, this.pluckedString);
-
-      this.playString(arr[0] * this.freq, 1.6, e=>0, this.pluckedString);
-      this.playString(arr[1] * this.freq, 1.7, e=>0, this.pluckedString);
-      this.playString(arr[2] * this.freq, 1.8, e=>0, this.pluckedString);
-    },
-
-    strumStruckString(arr) {
-
-      this.playString(arr[0] * this.freq, 0.1, this.struckString, e=>0);
-      this.playString(arr[1] * this.freq, 0.6, this.struckString, e=>0);
-      this.playString(arr[2] * this.freq, 1.1, this.struckString, e=>0);
-
-      this.playString(arr[0] * this.freq, 1.6, this.struckString, e=>0);
-      this.playString(arr[1] * this.freq, 1.7, this.struckString, e=>0);
-      this.playString(arr[2] * this.freq, 1.8, this.struckString, e=>0);
-    },
-
-    strumPluckedString2(arr) {
-
-      this.playString(arr[0] * this.freq, 0.1, e=>0, this.pluckedString2);
-      this.playString(arr[1] * this.freq, 0.6, e=>0, this.pluckedString2);
-      this.playString(arr[2] * this.freq, 1.1, e=>0, this.pluckedString2);
-
-      this.playString(arr[0] * this.freq, 1.6, e=>0, this.pluckedString2);
-      this.playString(arr[1] * this.freq, 1.7, e=>0, this.pluckedString2);
-      this.playString(arr[2] * this.freq, 1.8, e=>0, this.pluckedString2);
-    },
-
-    strumStruckString2(arr) {
-
-      this.playString(arr[0] * this.freq, 0.1, this.struckString2, e=>0);
-      this.playString(arr[1] * this.freq, 0.6, this.struckString2, e=>0);
-      this.playString(arr[2] * this.freq, 1.1, this.struckString2, e=>0);
-
-      this.playString(arr[0] * this.freq, 1.6, this.struckString2, e=>0);
-      this.playString(arr[1] * this.freq, 1.7, this.struckString2, e=>0);
-      this.playString(arr[2] * this.freq, 1.8, this.struckString2, e=>0);
-    },
-
-    playPluckedString() {
-      this.playString(this.freq, 0.1, e=>0, this.pluckedString);
-    },
-
-    playPluckedString2() {
-      this.playString(this.freq, 0.1, e=>0, this.pluckedString2);
-    },
-
-    playString(freq, deltaT, sinAmpFn, cosAmpFn) {
-      let l = parseFloat(this.string.l);
-      let N = parseInt(this.string.N);
-
-      let zero = new Float32Array(N+1).fill(0);
-      let real;
-      let img;
-
-      let sum = 0;
-
-      let oscArray = [];
-
-      for (let n = 1; n <= N; n++) {
-        real = zero.slice();
-        img = zero.slice();
-
-        real[n] = cosAmpFn(n,l);
-        img[n] = sinAmpFn(n,l);
-
-        let osc = context.createOscillator();
-        let wave = context.createPeriodicWave(real, img, {disableNormalization: true});
-
-        osc.setPeriodicWave(wave);
-        osc.frequency.value = freq;
-
-        if( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
-
-          sum += Math.abs(real[n]);
-          sum += Math.abs(img[n]);
-
-          oscArray.push({
-            osc: osc,
-            index: n
-          });
-        }
-
-
-      }
-
-      let T = context.currentTime;
-      let fadeTime = 1;
-
-      let maxGain = 0.5/sum;
-
-      for (let osc of oscArray) {
-        let n = osc.index;
-        let o = osc.osc;
-
-        fade(o, T + deltaT, fadeTime/n, maxGain);
-      }
-
-      /*
-      osc.connect(context.destination);
-
-      let T = context.currentTime;
-      osc.start(T);
-      osc.stop(T+2);
-      */
-
-    }
   },
 
   computed: {
+
   },
 
 
@@ -420,7 +377,13 @@ let app = new Vue({
     trianglecurve: {
       l: 0.3,
       h: 1
+    },
+
+    hammercurve: {
+      l: 0.1,
+      d: 0.1,
     }
+
   }
 
 })

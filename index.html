@@ -26,7 +26,7 @@
 # Making Music with Math
 ### A Guide to Synthesizing Sounds with the Wave Equation
 
-An idealized vibrating string obeys the [wave equation](https://en.wikipedia.org/wiki/Wave_equation). This equation tells us how each part of a string will move at each moment in time. Using this equation, it's possible to approximately simulate the motion of a plucked guitar string or a struck piano string. In this post we'll explain how you can do this.
+When you pluck a guitar string, or play a key on a piano, the sound is created by a vibrating string. The [wave equation](https://en.wikipedia.org/wiki/Wave_equation) tells us how each part of a string will move at each moment in time. Using this equation, it's possible to simulate the motion of a vibrating string. In this post, we'll see how you can extract musical sounds directly from this equation.
 
 ## The Ideal String
 
@@ -34,11 +34,13 @@ The wave equation for an ideal string is
 
 $$ \frac{\partial^2 y}{\partial t^2} = c^2 \frac{\partial^2 y}{\partial x^2} $$
 
-Or, more concisely,
+or more concisely,
 
 $$\ddot{y} = c^2 y''$$
 
-Here, $c$ is the speed of the travelling wave moving along the string. This equation tells us that the acceleration of any point along the string is proportional to the curvature at that point. For now, we're ignoring energy dissipation from friction and any stiffness in the string, which is why this is an **ideal** string.
+where $c$ is the speed of the travelling wave moving along the string.
+
+In words, this equations says that the acceleration of any point along the string is proportional to the curvature at that point. For now, we're ignoring energy dissipation from friction and any stiffness in the string, which is why we call this an ideal string. The behavior of real strings is more complicated to analyze, so we'll start simple.
 
 The goal is to find $y(x,t)$, which tells us the height of every point along the string $(x)$ at any moment in time $(t)$.
 
@@ -74,12 +76,12 @@ As we increase $n$, the string oscillates more rapidly. The frequency of vibrati
 
 Notice that just by requiring the string to be fixed at its ends, the wave equation ensures that an ideal string can only vibrate at a certain allowable set of frequencies (f, 2f, 3f, ...). Together, these frequencies are known as the *harmonics* of the string.
 
-The wave equation is a **linear equation**, which means that if $y_1$ is a solution and $y_2$ is a solution, then any combination of the form $a y_1 + b y_2$ is also a solution. So, in general we can add together various normal modes to obtain more complex allowed string vibration patterns.
+The wave equation is a **linear equation**, which means that if $y_1$ is a solution and $y_2$ is a solution, then any combination of the form $a y_1 + b y_2$ is also a solution. So we can always put together a weighted sum of different normal modes to obtain more complex patterns of string vibration.
 
 Just for fun, in the interactive below you can drag the sliders to mix in different amounts of the first 6 normal modes (here we're adjusting the $A_n$ coefficients, and the $B_n$ coefficients are set to zero). When you're done, turn up the speed slider to unfreeze the wave and watch the ensuing wave motion.
 </md>
 
-<animation :vars="mixingmodes" :sliders="{A1: ['1st mode', 0, 1, 0.01], A2: ['2nd mode', 0, 1, 0.01], A3: ['3rd mode', 0, 1, 0.01], A4: ['4th mode', 0, 1, 0.01], A5: ['5th mode', 0, 1, 0.01], A6: ['6th mode', 0, 0.5, 0.01], c: ['Speed', 0, 1, 0.01]}" :code="`
+<animation :vars="mixingmodes" :sliders="{A1: ['1st mode', -1, 1, 0.01], A2: ['2nd mode', -1, 1, 0.01], A3: ['3rd mode', -1, 1, 0.01], A4: ['4th mode', -1, 1, 0.01], A5: ['5th mode', -1, 1, 0.01], A6: ['6th mode', -1, 1, 0.01], c: ['Speed', 0, 1, 0.01]}" :code="`
 
 function graph(x, t, c, ...a) {
 
@@ -99,7 +101,9 @@ function graph(x, t, c, ...a) {
 
 <md>
 
-A somewhat amazing fact is that any allowable string shape can be expressed as a sum of different normal modes! So, the most general type of string vibration is
+Notice how moving the sliders alters the original shape of the string, as well as the subsequent motion. Every setting of sliders corresponds to a different, perfectly 'legal' configuration of the string.
+
+A somewhat amazing fact is that essentially any string shape can be expressed as a sum of different normal modes. So, the most general type of string vibration is
 
 $$
 \begin{aligned}
@@ -115,7 +119,7 @@ $$
 
 where $k_n = \frac{n \pi}{L}$, $\omega_n = c \frac{n \pi}{L}$, and $c$ is the speed of the travelling wave in the string.
 
-**Solving the wave equation in a particular situation amounts to working out the coefficients $A_n$ and $B_n$. Once we know these coefficients, we can plug them into the equation above to obtain a formula for the motion of every point on the string for all time.**
+Solving the wave equation in a particular situation amounts to working out the coefficients $A_n$ and $B_n$. Once we know these coefficients, we can plug them into the equation above to obtain a formula for the motion of every point on the string for all time.
 
 But how do we find these coefficients? To do this, we need to know something more about the string. In particular, we need to know the **initial position** and the **initial velocity** of the string, which we can write as $f(x)$ and $g(x)$.
 
@@ -130,7 +134,9 @@ Let's consider these two cases separately.
 
 ## The Plucked Ideal String
 
-The general solution for the case of the plucked string reduces to
+When you play a note on a guitar, you pluck the string and give it an initial shape.
+
+The solution for the ideal plucked string reduces to
 
 $$ y = \sum_{n=1}^\infty A_n \sin (k_n x)  \cos(\omega_n t)$$
 
@@ -160,7 +166,7 @@ $$
 Here's what this function for the plucked guitar string shape looks like.</md>
 
 
-<animation :vars="trianglecurve" :sliders="{l: ['Pluck location', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
+<animation :vars="trianglecurve" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
 
 function graph(x, t, l, h) {
   return x <= l ? h * x/l : h * (1 - x) / (1-l);
@@ -179,7 +185,7 @@ $$ y(x,t) = \sum_{n=1}^{N} A_n \sin (k_n x) \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -235,14 +241,14 @@ function graph(x, t, N, l) {
   To make sound with this waveform, we first need to do a couple of things.
 
   - Rewrite $\omega_n$ in terms of the fundamental frequency of the tone, so $\omega_n = 2 \pi n f$.
-  - Let's assume that each sine or cosine function decays exponentially with a time period $\tau_n$ that depends on its frequency (higher frequencies decay faster than lower ones). Following [this reference](http://large.stanford.edu/courses/2007/ph210/pelc2/), we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
+  - A real plucked string has a sound that fades. To model this, we need the string to dissipate energy. One way to do this is to ensure that each sine or cosine function decays exponentially, with a decay time $\tau_n$ that depends on its frequency (higher frequencies fade faster than lower ones). Following [this reference](http://large.stanford.edu/courses/2007/ph210/pelc2/), we can choose $\tau_n = \frac{\tau}{n}$ where $\tau$ is a characteristic fade time (in seconds).
 
 
   Making these changes, we end up with the following waveform.
 
   $$ w(t) = \sum_{n=1}^{N} A_n \cos(2 \pi n f t) e ^{ - n t / \tau }$$
 
-  We can synthesize this using the [createPeriodicWave()](https://developer.mozilla.org/en-US/docs/Web/API/BaseAudioContext/createPeriodicWave) WebAudio function. Here's what this sounds like.
+  Here's what this sounds like.
 </md>
 
 
@@ -253,11 +259,7 @@ function graph(x, t, N, l) {
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button class="button" @click="playPluckedString" style="margin-top: 5px;">PLAY STRING</button>
-
-  <button class="button" @click="strumPluckedString([1, 5/4, 3/2])" style="margin-top: 5px;">STRUM MAJOR CHORD</button>
-
-  <button class="button" @click="strumPluckedString([1, 6/5, 3/2])" style="margin-top: 5px;">STRUM MINOR CHORD</button>
+  <sound :sin="pluckedString" :freq="freq" :N="string.N"></sound>
 
 </animation>
 
@@ -266,7 +268,9 @@ function graph(x, t, N, l) {
 
   ## The Struck Ideal String
 
-  In the struck string, the general solution becomes
+  When you play a piano note, the string is struck with a hammer. So it's worth thinking about what happens when an ideal string is struck and given an initial velocity.
+
+  The solution for the ideal struck string becomes
 
   $$
   y = \sum_{n=1}^{\infty} B_n \sin (k_n x) \sin(\omega_n t)
@@ -292,7 +296,7 @@ function graph(x, t, N, l) {
   B_n = \frac{2}{\omega_n L} \int_{0}^{L} g(x) \sin (\frac{n \pi x}{L}) dx
   $$
 
-  For example, suppose that we strike the string with a velocity impulse concetrated at a point located a distance $l$ along the string. This would be like striking the string with the edge of a knife. We can model this velocity distribution as a delta function.
+  For example, suppose that we strike the string with a velocity impulse concetrated at a point located a distance $l$ along the string. This would be like striking the string with the edge of a knife. We can model this velocity distribution as a delta function, which you can think of as striking the string with an infinitely thin hammer.
 
   $$ g(x) = v L \delta (x-l) $$
 
@@ -311,7 +315,7 @@ function graph(x, t, N, l) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -342,7 +346,7 @@ function graph(x, t, N, l) {
   $$
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike location', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -367,18 +371,14 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <button class="button" @click="playStruckString" style="margin-top: 5px;">PLAY STRING</button>
-
-  <button class="button" @click="strumStruckString([1, 5/4, 3/2])" style="margin-top: 5px;">STRUM MAJOR CHORD</button>
-
-  <button class="button" @click="strumStruckString([1, 6/5, 3/2])" style="margin-top: 5px;">STRUM MINOR CHORD</button>
+  <sound :sin="struckString" :freq="freq" :N="string.N"></sound>
 
 </animation>
 
@@ -386,6 +386,114 @@ function graph(x, t, N, l) {
 <md>
   The struck string has a slightly harsher / brighter sound than the plucked string. This is because it has more energy in higher harmonics. The amplitudes corresponding to the $n^{\text{th}}$ harmonic in the plucked string fall off as $A_n \propto \frac{1}{n^2}$, but in the struck string they fall off as $B_n \propto \frac{1}{n}$.
 
+  Unfortunately, this doesn't sound very piano like. We can try and see what happens if we replace the infinitely narrow hammer strike with a finite-width hammer.
+
+  ## Varying the Strike Width
+
+  In this case, we can imagine that the initial velocity of the string is
+
+  $$
+  g(x) = \begin{cases}
+     v & \text{if } l - \frac{\delta}{2} \leq x \leq l + \frac{\delta}{2} \\
+     0 & \text{otherwise}
+  \end{cases}
+  $$
+
+  This equation is visualized in the interactive below. Note that this is a graph of the initial *velocity* of the string, not its initial position.
+</md>
+
+
+<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+
+function graph(x, t, l, d) {
+
+  return ((l - d/2 <= x) && (x <= l + d/2)) ? 1 : 0;
+}
+
+`"></animation>
+
+<md>
+  Plugging this into our equation for $B_n$, we find that in the case of a finite-width hammer, the coefficients are
+
+  $$
+    B_n = \frac{2 v}{\omega} \sin(\frac{n \pi l}{L}) \frac{2}{n \pi} \sin(\frac{n \pi \delta}{2L})
+  $$
+
+  Here's what the string motion looks like when struck by this kind of a hammer.
+</md>
+
+<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+
+function graph(x, t, l, d) {
+  let c = 0.375;
+  let v = 0.5;
+  let y = 0;
+
+  for (let n=1; n<=10; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+
+    a *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
+
+    y += a * Math.sin(k * x) * Math.sin(w * t);
+
+  }
+
+  return y/d;
+}
+
+`"></animation>
+
+<md>
+  When the hammer is very thin, the resulting motion looks exactly the same as the delta function impulse. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
+
+  The waveform for this string motion is shown below.
+</md>
+
+
+<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+
+function graph(x, t, l, d) {
+  let c = 0.375;
+  let y = 0;
+
+  for (let n=1; n<=10; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let a = (2 / w) * Math.sin(n * Math.PI * l);
+
+    a *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
+
+    y += a * Math.sin(w * x * 20);
+
+  }
+
+  return y/(2 * d);
+}
+
+`"></animation>
+
+
+<md>
+  Here's what this sounds like, after adding in an exponential fade.
+</md>
+
+<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}">
+
+  <div class="center-inline">
+    <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
+  </div>
+
+  <sound :sin="struckStringFW" :freq="freq" :N="string.N"></sound>
+
+</animation>
+
+<md>
+  For a thin hammer strike, the sound has a harsh attack, and sounds just like the first struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
+
+  In either case we can hear that the sound isn't particularly piano like. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
 </md>
 
 </div>
