@@ -26,7 +26,7 @@
   # Making Music with Math
   ### A Guide to Synthesizing Sounds with the Wave Equation
 
-  When you pluck a guitar string, or play a key on a piano, the sound is created by a vibrating string. The [wave equation](https://en.wikipedia.org/wiki/Wave_equation) tells us exactly how an idealized string will vibrate at every moment in time after the string is released. Using this equation, it's possible to simulate the motion of a vibrating string, and extract musical sounds directly from this motion. Let's see how we can do this.
+  When you pluck a guitar string or play a key on a piano, the sound is created by a vibrating string. The [wave equation](https://en.wikipedia.org/wiki/Wave_equation) tells us exactly how an idealized string will vibrate at every moment in time after the string is released. Using this equation, it's possible to simulate the motion of a vibrating string and extract musical sounds from this motion. In this post, we'll learn how to do this.
 
   ## The Wave Equation
 
@@ -40,7 +40,7 @@
 
   $$\ddot{y} = c^2 y''$$
 
-  where $c$ is the speed of the travelling wave moving along the string.
+  where $c$ is the speed of the traveling wave moving along the string.
 
   In words, this says that the vertical acceleration of every point on the string is proportional to the curvature at that point. In this picture, we're ignoring both energy loss from friction as well as any stiffness in the string.
 
@@ -163,7 +163,7 @@ function graph(x, t, c, ...a) {
 
   tells us the subsequent motion of the string.
 
-  To summarize, if we know *exactly* how the string started off (i.e. its initial position and its initial velocity), then we can calculate everything about its subsequent motion.
+  To summarize, if we know *exactly* how the string started (i.e. its initial position and its initial velocity), then we can calculate everything about its subsequent motion.
 
 
   ## The Plucked String
@@ -263,7 +263,7 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  The interactive above shows you the waveform for the plucked string. Notice how it changs depending on where you pluck the string.
+  The interactive above shows you the waveform for the plucked string. Notice how it changes depending on where you pluck the string.
 
   To make sound with this waveform, we first need to do a couple of things.
 
@@ -297,7 +297,7 @@ function graph(x, t, N, l) {
 
   When you play a piano note, the string is struck with a hammer. So it's worth thinking about what happens when an ideal string is struck.
 
-  In a purely struck string, the string starts off at rest, but with a non-zero intial velocity.
+  In a purely struck string, the string starts at rest, but with a non-zero initial velocity.
 
   Since $y(x,0) = 0$, this implies that $A_n = 0$.
 
@@ -399,7 +399,7 @@ function graph(x, t, N, l) {
 <md>
   The struck string has a slightly harsher / brighter sound than the plucked string. This is because it has more energy in higher harmonics. The amplitudes corresponding to the $n^{\text{th}}$ harmonic in the plucked string fall off as $A_n \propto \frac{1}{n^2}$, but in the struck string they fall off as $B_n \propto \frac{1}{n}$.
 
-  Unfortunately, this doesn't sound very piano like. We can try and see what happens if we replace the infinitely narrow hammer strike with a finite-width hammer.
+  Unfortunately, this doesn't sound very piano-like. We can try and see what happens if we replace the infinitely narrow hammer strike with a finite-width hammer.
 
   ## Varying the Strike Width
 
@@ -459,7 +459,7 @@ function graph(x, t, l, d) {
 `"></animation>
 
 <md>
-  When the hammer is very thin, the resulting motion looks exactly the same as the delta function impulse. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
+  When the hammer is very thin, the resulting motion is exactly like the delta function impulse. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
 
   The waveform for this string motion is shown below.
 </md>
@@ -504,9 +504,9 @@ function graph(x, t, l, d) {
 </animation>
 
 <md>
-  For a thin hammer strike, the sound has a harsh attack, and sounds just like the first struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
+  For a thin hammer strike, the sound has a harsh attack and sounds like the previous struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
 
-  In either case we can hear that the sound isn't particularly piano like. It turns out that the interaction between a piano hammer and the string is more complicated than a simple 'kick' of velocity. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
+  In either case, we can hear that the sound isn't particularly piano-like. It turns out that the interaction between a piano hammer and the string is more complicated than a simple 'kick' of velocity. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
 </md>
 
 </div>
