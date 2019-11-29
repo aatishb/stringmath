@@ -342,6 +342,11 @@ let app = new Vue({
       return (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
     },
 
+    bowedString(n) {
+      let l = this.string.l;
+      return (1/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),3);
+    },
+
   },
 
   computed: {
@@ -377,6 +382,11 @@ let app = new Vue({
     trianglecurve: {
       l: 0.3,
       h: 1
+    },
+
+    bowcurve: {
+      l: 0.3,
+      v: 1
     },
 
     hammercurve: {

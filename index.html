@@ -233,7 +233,7 @@ function graph(x, t, N, l) {
 
 <md>
 
-  The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). Notice that the string motion is periodic, as the string returns to its starting position and repeats the motion.
+  The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). Notice that the string motion is periodic, as the string returns to its starting position and repeats the motion. You can compare this animation to [slow-motion video footage](https://www.youtube.com/watch?v=3ATVOTJfkg8) of a plucked guitar string (or to [this footage](https://www.youtube.com/watch?v=_X72on6CSL0) of a more idealized string).
 
   The next step is to extract an audio waveform from this string motion. For the waveform $w(t)$, we want only the time-dependent part of the string motion.
 
@@ -338,9 +338,9 @@ function graph(x, t, N, l) {
   for (let n=1; n<=N; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+    let b = (2 * v / w) * Math.sin(n * Math.PI * l);
 
-    y += a * Math.sin(k * x) * Math.sin(w * t);
+    y += b * Math.sin(k * x) * Math.sin(w * t);
 
   }
 
@@ -369,9 +369,9 @@ function graph(x, t, N, l) {
   for (let n=1; n<=N; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+    let b = (2 * v / w) * Math.sin(n * Math.PI * l);
 
-    y += a * Math.sin(w * x * 20);
+    y += b * Math.sin(w * x * 20);
 
   }
 
@@ -429,7 +429,7 @@ function graph(x, t, l, d) {
   Plugging this into our equation for $B_n$, we find that in the case of a finite-width hammer, the coefficients are
 
   $$
-    B_n = \frac{2 v}{\omega} \sin(\frac{n \pi l}{L}) \frac{2}{n \pi} \sin(\frac{n \pi \delta}{2L})
+    B_n = \frac{2 v}{\omega_n} \sin(\frac{n \pi l}{L}) \frac{2}{n \pi} \sin(\frac{n \pi \delta}{2L})
   $$
 
   Here's what the string motion looks like when struck by this kind of a hammer.
@@ -445,11 +445,11 @@ function graph(x, t, l, d) {
   for (let n=1; n<=10; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (2 * v / w) * Math.sin(n * Math.PI * l);
+    let b = (2 * v / w) * Math.sin(n * Math.PI * l);
 
-    a *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
+    b *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
 
-    y += a * Math.sin(k * x) * Math.sin(w * t);
+    y += b * Math.sin(k * x) * Math.sin(w * t);
 
   }
 
@@ -474,11 +474,11 @@ function graph(x, t, l, d) {
   for (let n=1; n<=10; n++) {
     let k = n * Math.PI;
     let w = c * k;
-    let a = (2 / w) * Math.sin(n * Math.PI * l);
+    let b = (2 / w) * Math.sin(n * Math.PI * l);
 
-    a *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
+    b *= Math.sin(n * Math.PI * d/2) * 2 / (n * Math.PI);
 
-    y += a * Math.sin(w * x * 20);
+    y += b * Math.sin(w * x * 20);
 
   }
 
@@ -507,6 +507,110 @@ function graph(x, t, l, d) {
   For a thin hammer strike, the sound has a harsh attack and sounds like the previous struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
 
   In either case, we can hear that the sound isn't particularly piano-like. It turns out that the interaction between a piano hammer and the string is more complicated than a simple 'kick' of velocity. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
+
+  ## The Bowed String
+
+  Say we bow the string, as in a violin. The actual motion of a bowed string is fairly complex, but we can take a stab at a very simplified model. The physicist Helmholtz observed that when a violin string is bowed, the speed of the bowed point on the string matches the speed of the bow.
+
+  Let's bow our ideal string. We'll assume that the string is at rest, and is given a velocity profile that rises linearly from zero at the ends to peaking at the location of the bow.
+
+  This is similar to the case of the plucked string, except now we are describing the inital *velocity* and not the position of the string.
+
+  $$
+  \dot{y}(x,0) = \begin{cases}
+     v \frac{x}{l} & \text{if } x \leq l \\
+     v \frac{L - x}{L - l} & \text{if } l < x \leq L
+  \end{cases}
+  $$
+</md>
+
+<animation :vars="bowcurve" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01], v: ['Bow speed', -1, 1, 0.01]}" :code="`
+
+function graph(x, t, l, v) {
+  return x <= l ? v * x/l : v * (1 - x) / (1-l);
+}
+
+`"></animation>
+
+<md>
+  Plugging this in to our integral for $B_n$, we obtain
+
+  $$ B_n = \frac{1}{n^2 \pi^2 \omega_n} \frac{2 v L^2}{l (L- l)}  \sin(\frac{n \pi l}{L})$$
+
+  Here's an animation of the resulting string motion, with $v = 1$.
+
+</md>
+
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+
+  let c = 0.375;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let b = (1/w) *(1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
+
+    y += b * Math.sin(k * x) * Math.sin(w * t);
+
+  }
+
+  return y;
+}
+
+`"></animation>
+
+<md>
+  Say you bow the string near one of the ends, and track the motion of the string at the point that it touches the bow. You'll notice that it moves slowly in the upwards direction (which is the direction of the bow), and then suddenly snaps back to the other end.
+
+  This is the characteristic slip-stick motion of a bowed violin string, illustrated in the animation at [this link](https://newt.phys.unsw.edu.au/jw/torsional.html). The slower upwards motion occurs when the bow 'sticks' to the string, and the sudden downward motion takes place when the string 'slips' away from the bow.
+
+  You can compare this motion to [slow-motion video footage](https://www.youtube.com/watch?v=6JeyiM0YNo4) of a bowed violin string. (In the video, the string tension has been lowered to greatly exaggerate the string motion).
+
+  Here's the waveform for this sound.
+</md>
+
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+
+function graph(x, t, N, l) {
+  let c = 0.375;
+  let y = 0;
+
+  for (let n=1; n<=N; n++) {
+    let k = n * Math.PI;
+    let w = c * k;
+    let b = (1/w) *(1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
+    // b *= Math.pow(-1, n) * k;
+
+    y += b * Math.sin(w * x * 20);
+
+  }
+
+  return y/1.5;
+}
+
+`"></animation>
+
+<md>
+  Here's what this sounds like, after adding in an exponential fade.
+</md>
+
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}">
+
+  <div class="center-inline">
+    <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
+    <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
+  </div>
+
+  <sound :sin="bowedString" :freq="freq" :N="string.N"></sound>
+
+</animation>
+
+<md>
+
+  In this discussion, we've only considered how the string vibrates. In any real instrument, the string vibration doesn't directly produce sound. A vibrating string does a poor job of producing sound by itself, because it isn't able to effectively vibrate air molecules. Indeed without its body to amplify the sound, a string instrument would be almost inaudibly quiet. In the case of the piano, the string is coupled to a soundboard via a bridge. In the case of a guitar, it is coupled to the resonating body of the instrument. This connection serves to amplify and filter the string sound, and so the resulting sound is further altered from the one that we obtained directly from the string's vibration.
 </md>
 
 </div>
