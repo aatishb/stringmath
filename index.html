@@ -279,14 +279,14 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="pluckedString" :freq="freq" :N="string.N"></sound>
+  <sound :sin="pluckedString" :freq="freq" :N="10"></sound>
 
 </animation>
 
@@ -328,7 +328,7 @@ function graph(x, t, N, l) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -359,7 +359,7 @@ function graph(x, t, N, l) {
   $$
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
@@ -384,14 +384,14 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="struckString" :freq="freq" :N="string.N"></sound>
+  <sound :sin="struckString" :freq="freq" :N="10"></sound>
 
 </animation>
 
@@ -442,7 +442,7 @@ function graph(x, t, l, d) {
   let v = 0.5;
   let y = 0;
 
-  for (let n=1; n<=10; n++) {
+  for (let n=1; n<=20; n++) {
     let k = n * Math.PI;
     let w = c * k;
     let b = (2 * v / w) * Math.sin(n * Math.PI * l);
@@ -461,6 +461,8 @@ function graph(x, t, l, d) {
 <md>
   When the hammer is very thin, the resulting motion is exactly like the delta function impulse. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
 
+  If you set the strike position to be exactly in the middle and the hammer width to about 0.1, the motion you see resembles that in this [slow-motion video](https://www.youtube.com/watch?v=9O3VEXzuOKI) of a struck string.
+
   The waveform for this string motion is shown below.
 </md>
 
@@ -471,7 +473,7 @@ function graph(x, t, l, d) {
   let c = 0.375;
   let y = 0;
 
-  for (let n=1; n<=10; n++) {
+  for (let n=1; n<=20; n++) {
     let k = n * Math.PI;
     let w = c * k;
     let b = (2 / w) * Math.sin(n * Math.PI * l);
@@ -499,7 +501,7 @@ function graph(x, t, l, d) {
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="struckStringFW" :freq="freq" :N="string.N"></sound>
+  <sound :sin="struckStringFW" :freq="freq" :N="10"></sound>
 
 </animation>
 
@@ -541,14 +543,14 @@ function graph(x, t, l, v) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
 
   let c = 0.375;
   let y = 0;
 
-  for (let n=1; n<=N; n++) {
+  for (let n=1; n<=10; n++) {
     let k = n * Math.PI;
     let w = c * k;
     let b = (1/w) *(1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
@@ -572,13 +574,13 @@ function graph(x, t, N, l) {
   Here's the waveform for this sound.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="string" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
 
 function graph(x, t, N, l) {
   let c = 0.375;
   let y = 0;
 
-  for (let n=1; n<=N; n++) {
+  for (let n=1; n<=10; n++) {
     let k = n * Math.PI;
     let w = c * k;
     let b = (1/w) *(1/Math.pow((n*Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
@@ -597,14 +599,14 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="string" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="bowedString" :freq="freq" :N="string.N"></sound>
+  <sound :sin="bowedString" :freq="freq" :N="10"></sound>
 
 </animation>
 
