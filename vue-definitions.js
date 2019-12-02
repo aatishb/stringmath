@@ -92,12 +92,12 @@ Vue.component('animation', {
 
     </div>
 
-  <p5 v-if="code" src="./drawGraph.js" :data="{vars: vars, graph: graph}"></p5>
+  <p5 v-if="code" src="./drawGraph.js" :data="{vars: vars, graph: graph, marker: marker}"></p5>
 
   </div>
   `,
 
-  props: ['vars', 'sliders', 'code'],
+  props: ['vars', 'sliders', 'code', 'marker'],
 
   methods: {
     getVarName(val) {
@@ -107,10 +107,6 @@ Vue.component('animation', {
     getVar(val) {
       return this.vars[this.getVarName(val)];
     },
-
-    calculate() {
-      console.log(this.graph(0.5, 0.1, ...Object.values(this.vars)));
-    }
   },
 
   data: function() {
@@ -327,23 +323,23 @@ let app = new Vue({
   methods: {
 
     struckString(n) {
-      let l = this.string.l;
+      let l = this.struckstring.l;
       return Math.sin(n * Math.PI * l)/(Math.PI * n);
     },
 
     struckStringFW(n) {
-      let l = this.hammercurve.l;
-      let d = this.hammercurve.d;
+      let l = this.struckstring.l;
+      let d = this.struckstring.d;
       return 2 * Math.sin(n * Math.PI * l) * Math.sin(n * Math.PI * d/2) / Math.pow((Math.PI * n),2);
     },
 
     pluckedString(n) {
-      let l = this.string.l;
+      let l = this.pluckedstring.l;
       return (2/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),2);
     },
 
     bowedString(n) {
-      let l = this.string.l;
+      let l = this.bowedstring.l;
       return (1/(l * (1-l))) * Math.sin(n * Math.PI * l) / Math.pow((n * Math.PI),3);
     },
 
@@ -357,6 +353,7 @@ let app = new Vue({
   data: {
 
     freq: 220,
+    playing: false,
 
     stringnormalmodes: {
       n: 1,
@@ -364,9 +361,22 @@ let app = new Vue({
       b: 0
     },
 
-    string: {
+    pluckedstring: {
       N: 10,
-      l: 0.1
+      l: 0.1,
+      h: 1
+    },
+
+    bowedstring: {
+      N: 10,
+      l: 0.1,
+      v: 1
+    },
+
+    struckstring: {
+      N: 10,
+      l: 0.1,
+      d: 0.1
     },
 
     mixingmodes: {
@@ -377,21 +387,6 @@ let app = new Vue({
       A4: 0,
       A5: 0,
       A6: 0,
-    },
-
-    trianglecurve: {
-      l: 0.3,
-      h: 1
-    },
-
-    bowcurve: {
-      l: 0.3,
-      v: 1
-    },
-
-    hammercurve: {
-      l: 0.1,
-      d: 0.1,
     }
 
   }

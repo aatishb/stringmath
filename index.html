@@ -26,7 +26,7 @@
   # Making Music with Math
   ### A Guide to Synthesizing Sounds with the Wave Equation
 
-  When you pluck a guitar string or play a key on a piano, the sound is created by a vibrating string. The [wave equation](https://en.wikipedia.org/wiki/Wave_equation) tells us exactly how an idealized string will vibrate at every moment in time after the string is released. Using this equation, it's possible to simulate the motion of a vibrating string and extract musical sounds from this motion. In this post, we'll learn how to do this.
+  When you pluck a guitar string or play a key on a piano, the sound is created by a vibrating string. The [wave equation](https://en.wikipedia.org/wiki/Wave_equation) tells us exactly how an idealized string will vibrate at every moment in time after the string is released. Using this equation, it's possible to simulate the motion of a vibrating string and extract musical sounds from this motion. In this post, we'll take a stab at doing this.
 
   ## The Wave Equation
 
@@ -46,10 +46,10 @@
 
   We also need the string to be fixed at its ends, i.e.
 
-  $$ y_n(0,t) = 0 $$
-  $$ y_n(L,t) = 0 $$
+  $$ y(0,t) = 0 $$
+  $$ y(L,t) = 0 $$
 
-  The solution to this set of requirements is
+  The solutions to this set of requirements are
 
   $$ y_n = \sin (k_n x) \big( A_n \cos(\omega_n t) + B_n \sin(\omega_n t) \big)$$
 
@@ -57,9 +57,9 @@
 
   With a little calculus, you can verify that these solutions obey the wave equation, so long as $\omega_n^2 = c^2 k_n^2$. You can also verify that the string is indeed fixed at the ends, as required.
 
-  The $y_n$ provided by the above equation are known as the *normal modes* of the string. These represent the most fundamental ways in which a string can vibrate.
+  These solutions ($y_n$) are known as the *normal modes* of the string. They represent the fundamental ways in which a string can vibrate.
 
-  Let's visualize what the first few of these normal modes look like.
+  Let's visualize the first few of these normal modes.
 </md>
 
 <animation :vars="stringnormalmodes" :sliders="{n: ['Mode Number', 1, 6, 1]}" :code="`
@@ -76,11 +76,11 @@ function graph(x, t, n, a, b) {
 </animation>
 
 <md>
-  As we increase $n$, the string oscillates more rapidly. The frequency of vibration of each normal mode $f_n$ is related to $\omega_n$ by $f_n = \frac{\omega_n}{2 \pi}$. Plugging in $\omega_n = c \frac{n \pi}{L}$, we find that $f = n \frac{c}{2 L} = n f$.
+  As we increase $n$, the string oscillates more rapidly. The frequency of vibration of each normal mode $f_n$ is related to $\omega_n$ by $f_n = \frac{\omega_n}{2 \pi}$. Plugging in $\omega_n = c \frac{n \pi}{L}$, we find that $f_n = n \frac{c}{2 L} = n f$, where $f$ is the *fundamental frequency* of the string.
 
-  It's worth pausing to notice what just happened. We asked the wave equation to make sure that the string ends are fixed, and the wave equation came back and told us that the string can *only* vibrate at a very specific set of frequencies.
+  It's worth pausing to appreciate what just happened. We asked the wave equation to make sure that the string ends are fixed. In response, the wave equation came back and told us that the string can *only* vibrate at a very specific set of frequencies.
 
-  In the case of the ideal string, these allowable frequencies are integer multiples of a fundamental frequency (i.e f, 2f, 3f, ...). Together, these frequencies are known as the *harmonics* of the string.
+  In the case of the ideal string, these allowable frequencies are integer multiples of a fundamental frequency (f, 2f, 3f, ...). Together, these frequencies are known as the *harmonics* of the string.
 
   ## Mixing Modes of Vibration
 
@@ -110,7 +110,7 @@ function graph(x, t, c, ...a) {
 </animation>
 
 <md>
-  In the interactive above you can drag the sliders to mix in different amounts of the first 6 normal modes (we're adjusting the $A_n$ coefficients here, the $B_n$ coefficients are set to zero). Every setting of these sliders is a different, perfectly valid solution to the wave equation.
+  By dragging these sliders, you're mixing different proportions of the first 6 normal modes (we're adjusting the $A_n$ coefficients here, the $B_n$ coefficients are set to zero). Each mixture is a different, perfectly valid solution to the wave equation.
 
   A somewhat amazing fact is that essentially any string shape can be expressed as a sum of different normal modes. So, the most general type of string vibration is
 
@@ -191,9 +191,9 @@ function graph(x, t, c, ...a) {
 </md>
 
 
-<animation :vars="trianglecurve" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
+<animation :vars="pluckedstring" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01], h: ['Pluck height', -1, 1, 0.01]}" :code="`
 
-function graph(x, t, l, h) {
+function graph(x, t, N, l, h) {
   return x <= l ? h * x/l : h * (1 - x) / (1-l);
 }
 
@@ -203,7 +203,7 @@ function graph(x, t, l, h) {
 
   We can plug this function into to our integral for $A_n$, and use a tool like Wolfram Alpha to solve the integral. The [solution](https://www.wolframalpha.com/input/?i=%282%2FL%29*%28Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*x%2Fl%2C%7Bx%2C0%2Cl%7D%5D+%2B+Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*%281-x%2FL%29*%28L%2F%28L-l%29%29%2C%7Bx%2Cl%2CL%7D%5D%29)  is
 
-  $$ A_n = \frac{1}{n^2 \pi^2} \frac{2 h L^2}{l (L- l)}  \sin(\frac{n \pi l}{L})$$
+  $$ A_n = \frac{1}{\pi^2} \frac{2 h}{\frac{l}{L} (1 - \frac{l}{L})}  \frac{1}{n^2} \sin(\frac{n \pi l}{L})$$
 
   Let's animate this solution for the first $N$ terms in the sum.
 
@@ -211,9 +211,10 @@ function graph(x, t, l, h) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :marker="pluckedstring.l"
+:code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, h) {
   let c = 0.375;
   let y = 0;
 
@@ -235,15 +236,17 @@ function graph(x, t, N, l) {
 
   The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). Notice that the string motion is periodic, as the string returns to its starting position and repeats the motion. You can compare this animation to [slow-motion video footage](https://www.youtube.com/watch?v=3ATVOTJfkg8) of a plucked guitar string (or to [this footage](https://www.youtube.com/watch?v=_X72on6CSL0) of a more idealized string).
 
+  Even though the wave pulse moves sideways, every point on the string can only move vertically. You can verify this by looking at the red dot, which represents the point on the string where it was plucked.
+
   The next step is to extract an audio waveform from this string motion. For the waveform $w(t)$, we want only the time-dependent part of the string motion.
 
   $$ w(t) = \sum_{n=1}^{N} A_n \cos(\omega_n t)$$
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}" :code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, h) {
 
   let c = 0.375;
   let y = 0;
@@ -279,7 +282,7 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="string" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="pluckedstring" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -328,9 +331,10 @@ function graph(x, t, N, l) {
 
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :marker="struckstring.l"
+:code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, d) {
   let c = 0.375;
   let v = 0.5;
   let y = 0;
@@ -359,9 +363,9 @@ function graph(x, t, N, l) {
   $$
 </md>
 
-<animation :vars="string" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}" :code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, d) {
   let c = 0.375;
   let v = 0.5;
   let y = 0;
@@ -384,7 +388,7 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="struckstring" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -416,9 +420,9 @@ function graph(x, t, N, l) {
 </md>
 
 
-<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+<animation :vars="struckstring" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
 
-function graph(x, t, l, d) {
+function graph(x, t, N, l, d) {
 
   return ((l - d/2 <= x) && (x <= l + d/2)) ? 1 : 0;
 }
@@ -429,15 +433,16 @@ function graph(x, t, l, d) {
   Plugging this into our equation for $B_n$, we find that in the case of a finite-width hammer, the coefficients are
 
   $$
-    B_n = \frac{2 v}{\omega_n} \sin(\frac{n \pi l}{L}) \frac{2}{n \pi} \sin(\frac{n \pi \delta}{2L})
+    B_n = \frac{4 v}{n \pi \omega_n} \sin(\frac{n \pi l}{L}) \sin(\frac{n \pi \delta}{2L})
   $$
 
   Here's what the string motion looks like when struck by this kind of a hammer.
 </md>
 
-<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+<animation :vars="struckstring" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :marker="struckstring.l"
+:code="`
 
-function graph(x, t, l, d) {
+function graph(x, t, N, l, d) {
   let c = 0.375;
   let v = 0.5;
   let y = 0;
@@ -467,9 +472,9 @@ function graph(x, t, l, d) {
 </md>
 
 
-<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
+<animation :vars="struckstring" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}" :code="`
 
-function graph(x, t, l, d) {
+function graph(x, t, N, l, d) {
   let c = 0.375;
   let y = 0;
 
@@ -494,7 +499,7 @@ function graph(x, t, l, d) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="hammercurve" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}">
+<animation :vars="struckstring" :sliders="{l: ['Strike Position', 0.1, 0.9, 0.01], d: ['Hammer Width', 0.01, 1, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -526,9 +531,9 @@ function graph(x, t, l, d) {
   $$
 </md>
 
-<animation :vars="bowcurve" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01], v: ['Bow speed', -1, 1, 0.01]}" :code="`
+<animation :vars="bowedstring" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01], v: ['Bow speed', -1, 1, 0.01]}" :code="`
 
-function graph(x, t, l, v) {
+function graph(x, t, N, l, v) {
   return x <= l ? v * x/l : v * (1 - x) / (1-l);
 }
 
@@ -543,9 +548,9 @@ function graph(x, t, l, v) {
 
 </md>
 
-<animation :vars="string" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="bowedstring" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :marker="bowedstring.l" :code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, v) {
 
   let c = 0.375;
   let y = 0;
@@ -565,18 +570,18 @@ function graph(x, t, N, l) {
 `"></animation>
 
 <md>
-  Say you bow the string near one of the ends, and track the motion of a point on the string near the ends. You'll notice that it moves slowly in one direction, and then suddenly snaps back in the opposite direction.
+  Say you bow the string near one of the ends. The red dot shows the point where the bow touches the string. Notice how it moves.
 
-  This is the characteristic slip-stick motion of a bowed violin string, illustrated in the animation at [this link](https://newt.phys.unsw.edu.au/jw/torsional.html). The slower upwards motion occurs when the bow 'sticks' to the string, and the sudden downward motion takes place when the string 'slips' away from the bow.
+  You'll see that it moves slowly in one direction, and then suddenly snaps back in the opposite direction. This is the characteristic **slip-stick motion** of a bowed violin string, illustrated in the animation at [this link](https://newt.phys.unsw.edu.au/jw/torsional.html). The slower motion in one direction occurs when the string sticks to the bow, and the sudden motion in the other direction occurs when the string slips away from the bow.
 
   You can compare this motion to [slow-motion video footage](https://www.youtube.com/watch?v=6JeyiM0YNo4) of a bowed violin string. (In the video, the string tension has been lowered to greatly exaggerate the string motion).
 
   Here's the waveform for this sound.
 </md>
 
-<animation :vars="string" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
+<animation :vars="bowedstring" :sliders="{l: ['Bow position', 0.1, 0.9, 0.01]}" :code="`
 
-function graph(x, t, N, l) {
+function graph(x, t, N, l, v) {
   let c = 0.375;
   let y = 0;
 
@@ -599,7 +604,7 @@ function graph(x, t, N, l) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="string" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="bowedstring" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
@@ -612,7 +617,7 @@ function graph(x, t, N, l) {
 
 <md>
 
-  In this discussion, we've only considered how the string vibrates. In any real instrument, the string vibration doesn't directly produce sound. Without its body to amplify the sound, a string instrument would be almost inaudibly quiet. This is because a string by itself isn't able to effectively vibrate air molecules. In the case of the piano, the string is coupled to a soundboard via the piano bridge. In the case of a violin or guitar, it's coupled to the resonating body of the instrument, also via the bridge. This connection amplifies and filters the string sound, and so the resulting waveform and sound is further altered from the one that we obtained directly from the string's vibration.
+  In this discussion, we've only considered how the string vibrates. In any real instrument, the string vibration doesn't directly produce sound. Without its body to amplify the sound, a string instrument would be inaudibly quiet. This is because strings by themselves can't effectively transfer their energy to air molecules. In the case of the piano, the string is coupled to a soundboard via the piano bridge. The vibration of this soundboard produces much of the audible sound. In the case of a violin or guitar, it's coupled to the resonating body of the instrument, also via the bridge. This amplifies and filters the string sound, and so the resulting waveform and sound is greatly altered from the one that we obtained directly from the string's vibration. So in any serious attempt to synthesize the sound of a musical instrument, you also have to account for the effect of the instrument's body on the sound.
 </md>
 
 </div>

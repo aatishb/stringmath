@@ -19,6 +19,8 @@ function sketch(parent) { // we pass the sketch data from the parent
     p.draw = function() {
       if (parent.isVisible) {
 
+        let vars = Object.values(parent.data.vars);
+
         let t = p.millis()/1000;
 
         p.background(0);
@@ -29,7 +31,6 @@ function sketch(parent) { // we pass the sketch data from the parent
         for (let x=0; x<=1.001; x+=0.001) {
 
           let y = 0;
-          let vars = Object.values(parent.data.vars);
           y = graph(x,t,...vars);
           p.vertex(
             p.width * x,
@@ -38,6 +39,25 @@ function sketch(parent) { // we pass the sketch data from the parent
         }
 
         p.endShape();
+
+        if (parent.data.marker) {
+          let l = parent.data.marker;
+          let y =  graph(l,t,...vars);
+          p.fill('#c31');
+          p.noStroke();
+          p.ellipse(
+            p.width * l,
+            p.map(y, -1, 1, p.height, 0),
+            6);
+          p.noFill();
+          p.stroke(255);
+        }
+      }
+    };
+
+    p.mouseClicked = function() {
+      if (p.mouseY > 0 && p.mouseY < p.height) {
+        console.log(parent.data);
       }
     };
 
