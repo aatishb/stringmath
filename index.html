@@ -49,13 +49,13 @@
   $$ y(0,t) = 0 $$
   $$ y(L,t) = 0 $$
 
-  The solutions to this set of requirements are
+  where $L$ is the string's length. The solutions to this set of requirements are
 
   $$ y_n = \sin (k_n x) \big( A_n \cos(\omega_n t) + B_n \sin(\omega_n t) \big)$$
 
-  where $k_n = \frac{n \pi}{L}$, $\omega_n = c \frac{n \pi}{L}$, $n = 1,2,3,...$, and $A_n$ and $B_n$ are coefficients to be determined.
+  where $k_n = \frac{n \pi}{L}$, $\omega_n = c \frac{n \pi}{L}$, $n = 1,f2,3,...$, and $A_n$ and $B_n$ are coefficients to be determined.
 
-  With a little calculus, you can verify that these solutions obey the wave equation, so long as $\omega_n^2 = c^2 k_n^2$. You can also verify that the string is indeed fixed at the ends, as required.
+  With a little calculus, you can verify that these solutions obey the wave equation. You can also verify that the string is fixed at the ends, as required.
 
   These solutions ($y_n$) are known as the *normal modes* of the string. They represent the fundamental ways in which a string can vibrate.
 
@@ -203,7 +203,7 @@ function graph(x, t, N, l, h) {
 
   We can plug this function into to our integral for $A_n$, and use a tool like Wolfram Alpha to solve the integral. The [solution](https://www.wolframalpha.com/input/?i=%282%2FL%29*%28Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*x%2Fl%2C%7Bx%2C0%2Cl%7D%5D+%2B+Integrate%5Bsin%28n+pi+x+%2F+L%29+*+h*%281-x%2FL%29*%28L%2F%28L-l%29%29%2C%7Bx%2Cl%2CL%7D%5D%29)  is
 
-  $$ A_n = \frac{1}{\pi^2} \frac{2 h}{\frac{l}{L} (1 - \frac{l}{L})}  \frac{1}{n^2} \sin(\frac{n \pi l}{L})$$
+  $$ A_n = \frac{2}{\pi^2} \frac{h}{\frac{l}{L} (1 - \frac{l}{L})}  \frac{1}{n^2} \sin(\frac{n \pi l}{L})$$
 
   Let's animate this solution for the first $N$ terms in the sum.
 
@@ -236,7 +236,7 @@ function graph(x, t, N, l, h) {
 
   The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). Notice that the string motion is periodic, as the string returns to its starting position and repeats the motion. You can compare this animation to [slow-motion video footage](https://www.youtube.com/watch?v=3ATVOTJfkg8) of a plucked guitar string (or to [this footage](https://www.youtube.com/watch?v=_X72on6CSL0) of a more idealized string).
 
-  Even though the wave pulse moves sideways, every point on the string can only move vertically. You can verify this by looking at the red dot, which represents the point on the string where it was plucked.
+  Even though the wave pulse moves sideways, every point on the string can only move up or down. You can see this for yourself by observing the red dot in the animation above, which represents the point on the string where it was plucked.
 
   The next step is to extract an audio waveform from this string motion. For the waveform $w(t)$, we want only the time-dependent part of the string motion.
 
@@ -255,6 +255,7 @@ function graph(x, t, N, l, h) {
     let k = n * Math.PI;
     let w = c * k;
     let a = (1/Math.pow((n * Math.PI),2)) * (2/(l * (1-l))) * Math.sin(n * Math.PI * l);
+    //a *= Math.pow(-1, n) * k;
 
     y += a * Math.cos(w * x * 20);
 
@@ -324,6 +325,12 @@ function graph(x, t, N, l, h) {
   B_n = \frac{2 v}{\omega_n} \sin (\frac{n \pi l}{L})
   $$
 
+  Substituting $\omega_n = \frac{n \pi c}{L}$, we see that
+
+  $$
+  B_n = \frac{2}{\pi} \frac{v L}{c} \frac{1}{n} \sin (\frac{n \pi l}{L})
+  $$
+
   Let's animate this solution for the first $N$ terms in the sum.
 
   $$ y(x,t) = \sum_{n=1}^{N} B_n \sin (k_n x) \sin(\omega_n t)$$
@@ -374,6 +381,7 @@ function graph(x, t, N, l, d) {
     let k = n * Math.PI;
     let w = c * k;
     let b = (2 * v / w) * Math.sin(n * Math.PI * l);
+    //b *= Math.pow(-1, n) * k;
 
     y += b * Math.sin(w * x * 20);
 
@@ -433,7 +441,13 @@ function graph(x, t, N, l, d) {
   Plugging this into our equation for $B_n$, we find that in the case of a finite-width hammer, the coefficients are
 
   $$
-    B_n = \frac{4 v}{n \pi \omega_n} \sin(\frac{n \pi l}{L}) \sin(\frac{n \pi \delta}{2L})
+    B_n = \frac{4 v}{n \pi \omega_n} \sin(\frac{n \pi \delta}{2L}) \sin(\frac{n \pi l}{L})
+  $$
+
+  Substituting $\omega_n = \frac{n \pi c}{L}$, we find that
+
+  $$
+    B_n = \frac{4}{\pi^2} \frac{v L}{c} \sin(\frac{n \pi \delta}{2L}) \frac{1}{n^2} \sin(\frac{n \pi l}{L})
   $$
 
   Here's what the string motion looks like when struck by this kind of a hammer.
@@ -464,7 +478,7 @@ function graph(x, t, N, l, d) {
 `"></animation>
 
 <md>
-  When the hammer is very thin, the resulting motion is exactly like the delta function impulse. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
+  When the hammer is very thin, the resulting motion is reminiscent of the delta function impulse that we saw above. When we broaden the hammer, the pulse becomes wider and is more smoothed out in appearance.
 
   If you set the strike position to be exactly in the middle and the hammer width to about 0.1, the motion you see resembles that in this [slow-motion video](https://www.youtube.com/watch?v=9O3VEXzuOKI) of a struck string.
 
@@ -542,7 +556,11 @@ function graph(x, t, N, l, v) {
 <md>
   Plugging this in to our integral for $B_n$, we obtain
 
-  $$ B_n = \frac{1}{n^2 \pi^2 \omega_n} \frac{2 v L^2}{l (L- l)}  \sin(\frac{n \pi l}{L})$$
+  $$ B_n = \frac{1}{\pi^2} \frac{2 v}{\omega_n \frac{l}{L} (1 - \frac{l}{L})}  \frac{1}{n^2} \sin(\frac{n \pi l}{L})$$
+
+  Substituting $\omega_n = \frac{n \pi c}{L}$, we arrive at
+
+  $$ B_n = \frac{2}{\pi^3} \frac{v L}{c} \frac{1}{\frac{l}{L} (1 - \frac{l}{L})} \frac{1}{n^3} \sin(\frac{n \pi l}{L})$$
 
   Here's an animation of the resulting string motion, with $v = 1$.
 
@@ -604,7 +622,7 @@ function graph(x, t, N, l, v) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="bowedstring" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="bowedstring" :sliders="{l: ['Bow position', 0.05, 0.95, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;

@@ -8,7 +8,7 @@ Vue.component('sound', {
     </div>
   `,
 
-  props: ['sin', 'cos', 'freq', 'N'],
+  props: ['sin', 'cos', 'freq', 'N', 'bow'],
 
   methods: {
     strum(arr) {
@@ -16,9 +16,9 @@ Vue.component('sound', {
       this.playString(arr[1], 0.6);
       this.playString(arr[2], 1.1);
 
-      this.playString(arr[0], 1.6);
-      this.playString(arr[1], 1.7);
-      this.playString(arr[2], 1.8);
+      this.playString(arr[0], 2);
+      this.playString(arr[1], 2.1);
+      this.playString(arr[2], 2.2);
     },
 
     playString(freqMultiplier, deltaT) {
@@ -46,7 +46,7 @@ Vue.component('sound', {
         osc.setPeriodicWave(wave);
         osc.frequency.value = this.freq * freqMultiplier;
 
-        if( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
+        if ( Math.abs(real[n]) > epsilon || Math.abs(img[n]) > epsilon ) {
 
           sum += Math.abs(real[n]);
           sum += Math.abs(img[n]);
@@ -66,8 +66,11 @@ Vue.component('sound', {
       for (let osc of oscArray) {
         let n = osc.index;
         let o = osc.osc;
-
-        fade(o, T + deltaT, fadeTime/n, maxGain);
+        if (this.bow) {
+          play(o, T + deltaT, 1, 1);
+        } else {
+          fade(o, T + deltaT, fadeTime/n, maxGain);
+        }
       }
 
     }
