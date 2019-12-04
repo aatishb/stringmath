@@ -283,14 +283,14 @@ function graph(x, t, N, l, h) {
 </md>
 
 
-<animation :vars="pluckedstring" :sliders="{l: ['Pluck position', 0.1, 0.9, 0.01]}">
+<animation :vars="pluckedstring" :sliders="{N: ['Number of terms', 1, 10, 1], l: ['Pluck position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="pluckedString" :freq="freq" :N="10"></sound>
+  <sound :sin="pluckedString" :freq="freq" :N="pluckedstring.N"></sound>
 
 </animation>
 
@@ -396,14 +396,14 @@ function graph(x, t, N, l, d) {
   Here's what this sounds like, after adding in an exponential fade.
 </md>
 
-<animation :vars="struckstring" :sliders="{l: ['Strike position', 0.1, 0.9, 0.01]}">
+<animation :vars="struckstring" :sliders="{N: ['Number of terms', 1, 50, 1], l: ['Strike position', 0.1, 0.9, 0.01]}">
 
   <div class="center-inline">
     <div> Fundamental Frequency = {{freq}} </div> &nbsp;&nbsp;
     <input type="range" :min="110" :max="440" :step="1" v-model.number="freq"></input>
   </div>
 
-  <sound :sin="struckString" :freq="freq" :N="10"></sound>
+  <sound :sin="struckString" :freq="freq" :N="struckstring.N"></sound>
 
 </animation>
 
