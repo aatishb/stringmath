@@ -57,7 +57,7 @@
 
   With a little calculus, you can verify that these solutions obey the wave equation. You can also verify that the string is fixed at the ends, as required.
 
-  These solutions ($y_n$) are known as the *normal modes* of the string. They represent the fundamental ways in which a string can vibrate.
+  These solutions ($y_n$) are known as the *normal modes* of the string. I like to think of these as the simplest possible ways in which a string can vibrate.
 
   Let's visualize the first few of these normal modes.
 </md>
@@ -78,7 +78,7 @@ function graph(x, t, n, a, b) {
 <md>
   As we increase $n$, the string oscillates more rapidly. The frequency of vibration of each normal mode $f_n$ is related to $\omega_n$ by $f_n = \frac{\omega_n}{2 \pi}$. Plugging in $\omega_n = c \frac{n \pi}{L}$, we find that $f_n = n \frac{c}{2 L} = n f$, where $f$ is the *fundamental frequency* of the string.
 
-  It's worth pausing to appreciate what just happened. We asked the wave equation to make sure that the string ends are fixed. In response, the wave equation came back and told us that the string can *only* vibrate at a very specific set of frequencies.
+  It's worth pausing to appreciate what just happened. We asked the wave equation to make sure that the ends of the strings can't move. In response, the wave equation came back and told us that the string can *only* vibrate at a very specific set of frequencies.
 
   In the case of the ideal string, these allowable frequencies are integer multiples of a fundamental frequency (f, 2f, 3f, ...). Together, these frequencies are known as the *harmonics* of the string.
 
@@ -234,9 +234,9 @@ function graph(x, t, N, l, h) {
 
 <md>
 
-  The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). Notice that the string motion is periodic, as the string returns to its starting position and repeats the motion. You can compare this animation to [slow-motion video footage](https://www.youtube.com/watch?v=3ATVOTJfkg8) of a plucked guitar string (or to [this footage](https://www.youtube.com/watch?v=_X72on6CSL0) of a more idealized string).
+  The animation above shows the motion of the string following the initial pluck (with $h$ set to $1$). As you add more terms to the sum, the animation becomes an increasingly good approximation of the string's motion.
 
-  Even though the wave pulse moves sideways, every point on the string can only move up or down. You can see this for yourself by observing the red dot in the animation above, which represents the point on the string where it was plucked.
+  You can compare this animation to [slow-motion video footage](https://www.youtube.com/watch?v=3ATVOTJfkg8) of an actual plucked guitar string (or to [this footage](https://www.youtube.com/watch?v=_X72on6CSL0) of a more idealized string).
 
   The next step is to extract an audio waveform from this string motion. For the waveform $w(t)$, we want only the time-dependent part of the string motion.
 
@@ -301,9 +301,7 @@ function graph(x, t, N, l, h) {
 
   When you play a piano note, the string is struck with a hammer. So it's worth thinking about what happens when an ideal string is struck.
 
-  In a purely struck string, the string starts at rest, but with a non-zero initial velocity.
-
-  Since $y(x,0) = 0$, this implies that $A_n = 0$.
+  In a purely struck string, the string starts at rest, but with a non-zero initial velocity. Since $y(x,0) = 0$, this implies that $A_n = 0$.
 
   So the solution for the ideal struck string reduces to
 
@@ -409,7 +407,7 @@ function graph(x, t, N, l, d) {
 
 
 <md>
-  The struck string has a slightly harsher / brighter sound than the plucked string. This is because it has more energy in higher harmonics. The amplitudes corresponding to the $n^{\text{th}}$ harmonic in the plucked string fall off as $A_n \propto \frac{1}{n^2}$, but in the struck string they fall off as $B_n \propto \frac{1}{n}$.
+  The struck string has a noticeably harsher sound than the plucked string. This is because it has more energy in higher harmonics. The amplitudes corresponding to the $n^{\text{th}}$ harmonic in the plucked string fall off as $\frac{1}{n^2}$, but in the struck string they fall off as $\frac{1}{n}$.
 
   Unfortunately, this doesn't sound very piano-like. We can try and see what happens if we replace the infinitely narrow hammer strike with a finite-width hammer.
 
@@ -525,13 +523,13 @@ function graph(x, t, N, l, d) {
 </animation>
 
 <md>
-  For a thin hammer strike, the sound has a harsh attack and sounds like the previous struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
+  For a thin hammer strike, the sound has a harsh attack and sounds like the earlier struck string (where we used an infinitely thin hammer). However, as we increase the hammer size, the sound becomes more like the plucked string.
 
-  In either case, we can hear that the sound isn't particularly piano-like. It turns out that the interaction between a piano hammer and the string is more complicated than a simple 'kick' of velocity. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
+  In either case, we can hear that the sound isn't particularly piano-like. In reality, the interaction between a piano hammer and the string is more complicated than a simple 'kick' of velocity. In more realistic physics-based piano models, the interaction between the piano and the string is considered more carefully.
 
   ## The Bowed String
 
-  Say we bow the string, as in a violin. The actual motion of a bowed string is fairly complex, but we can take a stab at a very simplified model. The physicist Helmholtz observed that when a violin string is bowed, the speed of the bowed point on the string matches the speed of the bow.
+  Say we bow the string, as in a violin. The actual motion of a bowed string is fairly complex, but we can take a stab at a simplified model. The physicist Helmholtz observed that when a violin string is bowed, the speed of the bowed point on the string matches the speed of the bow.
 
   Let's bow our ideal string. We'll assume that the string is at rest, and is given a velocity profile that rises linearly from zero at the ends to peaking at the location of the bow.
 
@@ -635,7 +633,11 @@ function graph(x, t, N, l, v) {
 
 <md>
 
-  In this discussion, we've only considered how the string vibrates. In any real instrument, the string vibration doesn't directly produce sound. Without its body to amplify the sound, a string instrument would be inaudibly quiet. This is because strings by themselves can't effectively transfer their energy to air molecules. In the case of the piano, the string is coupled to a soundboard via the piano bridge. The vibration of this soundboard produces much of the audible sound. In the case of a violin or guitar, it's coupled to the resonating body of the instrument, also via the bridge. This amplifies and filters the string sound, and so the resulting waveform and sound is greatly altered from the one that we obtained directly from the string's vibration. So in any serious attempt to synthesize the sound of a musical instrument, you also have to account for the effect of the instrument's body on the sound.
+  In this discussion, we've only considered how the string vibrates. In any real instrument, the string vibration doesn't directly produce sound. Without its body to amplify the sound, a string instrument would be inaudibly quiet. This is because strings by themselves can't effectively transfer their energy to air molecules.
+
+  In the case of the piano, the string is coupled to a soundboard via the piano bridge. The vibration of this soundboard produces much of the audible sound. In the case of a violin or guitar, it's coupled to the resonating body of the instrument, also via the bridge. This amplifies and filters the string sound, and so the resulting waveform and sound is greatly altered from the one that we obtained directly from the string's vibration.
+
+  So if you're seriously attempting to synthesize the sound of a musical instrument, you'll also need to account for the effect of the instrument's body on the sound. However, it's still interesting to see how far we can go just from the wave equation of an ideal string, by appplying the appropriate initial conditions.
 </md>
 
 </div>
