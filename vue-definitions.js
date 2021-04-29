@@ -202,6 +202,7 @@ let app = new Vue({
   },
 
   data: {
+
     sketch1: {
       variables: {x: 0.5, y: 0.5, r: 50},
       sliders: {
@@ -209,6 +210,15 @@ let app = new Vue({
         y: ['y position', 0, 1, 0.01],
         r: ['radius', 0, 200, 1],
       } 
+    },
+
+    sketch2: {
+      variables: {r: 60, g: 20, b: 90},
+      sliders: {
+        r: ['Red', 0, 255, 1],         
+        g: ['Green', 0, 255, 1],         
+        b: ['Blue', 0, 255, 1],         
+      }
     }
   }
 

@@ -26,10 +26,11 @@ This is some text written in markdown. It can include [links](https://aatishb.co
 
 ## A p5 Animation
 
-Here's how to embed a p5 animation with custom sliders.
+Here's how to embed a p5 interactive with sliders.
 </md>
 
 <!-- variables and sliders are defined in vue-definitions.js -->
+
 <animation 
 :variables="sketch1.variables" 
 :sliders="sketch1.sliders" 
@@ -46,7 +47,29 @@ function draw() {
 </animation>
 
 <md>
-Try to change this p5 code to create other interactives.
+Here's another p5 interactive. Try moving your mouse over it.
+</md>
+
+<!-- variables and sliders are defined in vue-definitions.js -->
+
+<animation 
+:variables="sketch2.variables" 
+:sliders="sketch2.sliders" 
+:code="`
+function setup() {
+  p.noStroke();
+}
+
+function draw() {
+  p.background(data.r, data.g, data.b);
+  p.fill(255 - data.r, 255 - data.g, 255 - data.b);
+  p.circle(p.mouseX, p.mouseY, 100);
+}
+`">
+</animation>
+
+<md>
+Try changing the code or adding more interactives! (Remember to write the p5 code in [instance mode](https://github.com/processing/p5.js/wiki/Global-and-instance-mode).)
 </md>
 
 </div>
