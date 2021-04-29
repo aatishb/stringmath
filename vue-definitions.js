@@ -203,8 +203,12 @@ let app = new Vue({
 
   data: {
     sketch1: {
-      variables: {x: 0.5, y: 0.5},
-      sliders: {x: ['x position', 0, 1, 0.01], y: ['y position', 0, 1, 0.01]} 
+      variables: {x: 0.5, y: 0.5, r: 50},
+      sliders: {
+        x: ['x position', 0, 1, 0.01], 
+        y: ['y position', 0, 1, 0.01],
+        r: ['radius', 0, 200, 1],
+      } 
     }
   }
 

@@ -34,13 +34,13 @@ Here's how to embed a p5 animation with custom sliders.
 :variables="sketch1.variables" 
 :sliders="sketch1.sliders" 
 :code="`
-function setup(p, data) {
+function setup() {
   p.fill(255);
 }
 
-function draw(p, data) {
+function draw() {
   p.background(0);
-  p.circle(p.width * data.x, p.height * data.y, 100);
+  p.circle(p.width * data.x, p.height * data.y, 2 * data.r);
 }
 `">
 </animation>

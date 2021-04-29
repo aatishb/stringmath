@@ -12,19 +12,26 @@ function sketch(parent) { // we pass the sketch data from the parent
         console.log(error);
       }
     }
+    let data = parent.data.variables;
 
     p.setup = function() {
       let canvas = p.createCanvas(400, 400);
       canvas.parent(parent.$el);
 
-      setup(p, parent.data.variables);
+      setup();
     };
 
 
     p.draw = function() {
       if (parent.isVisible) {
-        draw(p, parent.data.variables);
+        draw();
       }
+    };
+    
+    p.dataChanged = function(val, oldVal) {
+      // console.log('data changed');
+      // console.log('x: ', val.x, 'y: ', val.y);
+      data = val.variables;
     };
 
     /*
@@ -37,10 +44,7 @@ function sketch(parent) { // we pass the sketch data from the parent
 
     // this is a new function we've added to p5
     // it runs only if the data changes
-    p.dataChanged = function(val, oldVal) {
-      // console.log('data changed');
-      // console.log('x: ', val.x, 'y: ', val.y);
-    };
+
     */
 
   };
