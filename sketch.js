@@ -17,13 +17,13 @@ function sketch(parent) { // we pass the sketch data from the parent
       let canvas = p.createCanvas(400, 400);
       canvas.parent(parent.$el);
 
-      setup(p, parent.data.vars);
+      setup(p, parent.data.variables);
     };
 
 
     p.draw = function() {
       if (parent.isVisible) {
-        draw(p, parent.data.vars);
+        draw(p, parent.data.variables);
       }
     };
 

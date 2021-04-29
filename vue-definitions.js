@@ -6,22 +6,22 @@ Vue.component('animation', {
     <div class="center">
 
       <div v-if="sliders" class="center-inline" v-for="s in sliders">
-        <div> {{s[0]}} = <span style="width: 2rem; margin: 0;">{{vars[getVarName(s)]}}</span> </div>
+        <div> {{s[0]}} = <span style="width: 2rem; margin: 0;">{{variables[getVarName(s)]}}</span> </div>
         &nbsp;&nbsp;
         <input type="range" :min="s[1]" :max="s[2]" :step="s[3]" 
-          v-model.number="vars[getVarName(s)]"></input>
+          v-model.number="variables[getVarName(s)]"></input>
       </div>
 
       <slot></slot>
 
     </div>
 
-  <p5 v-if="code" src="./sketch.js" :data="{vars: vars, code: code}"></p5>
+  <p5 v-if="code" src="./sketch.js" :data="{variables: variables, code: code}"></p5>
 
   </div>
   `,
 
-  props: ['vars', 'sliders', 'code'],
+  props: ['variables', 'sliders', 'code'],
 
   methods: {
     getVarName(val) {
@@ -29,7 +29,7 @@ Vue.component('animation', {
     },
 
     getVar(val) {
-      return this.vars[this.getVarName(val)];
+      return this.variables[this.getVarName(val)];
     },
   },
 
