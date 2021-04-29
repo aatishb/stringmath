@@ -29,9 +29,10 @@ This is some text written in markdown. It can include [links](https://aatishb.co
 Here's how to embed a p5 animation with custom sliders.
 </md>
 
+<!-- vars and sliders are defined in vue-definitions.js -->
 <animation 
-:vars="{x: 0.5, y: 0.5}" 
-:sliders="{x: ['x position', 0, 1, 0.01], y: ['y position', 0, 1, 0.01]}" 
+:vars="sketch1.variables" 
+:sliders="sketch1.sliders" 
 :code="`
 function setup(p, data) {
   p.fill(255);
@@ -41,7 +42,6 @@ function draw(p, data) {
   p.background(0);
   p.circle(p.width * data.x, p.height * data.y, 100);
 }
-
 `">
 </animation>
 

@@ -6,7 +6,7 @@ Vue.component('animation', {
     <div class="center">
 
       <div v-if="sliders" class="center-inline" v-for="s in sliders">
-        <div> {{s[0]}} {{getVarName(s)}} = {{vars[getVarName(s)]}} </div>
+        <div> {{s[0]}} = <span style="width: 2rem; margin: 0;">{{vars[getVarName(s)]}}</span> </div>
         &nbsp;&nbsp;
         <input type="range" :min="s[1]" :max="s[2]" :step="s[3]" 
           v-model.number="vars[getVarName(s)]"></input>
@@ -128,32 +128,6 @@ Vue.component('md', {
 });
 
 
-// custom graph component
-Vue.component('graph', {
-
-  props: ['traces', 'layout'],
-
-  template: '<div ref="graph" class="graph" style="height: 600px;"></div>',
-
-  methods: {
-
-    makeGraph() {
-      Plotly.newPlot(this.$refs.graph, this.traces, this.layout);
-    },
-
-  },
-
-  mounted() {
-    this.makeGraph();
-  },
-
-  watch: {
-    traces() {
-      this.makeGraph();
-    }
-  }
-})
-
 // custom p5 component
 
 Vue.component('p5', {
@@ -228,6 +202,10 @@ let app = new Vue({
   },
 
   data: {
+    sketch1: {
+      variables: {x: 0.5, y: 0.5},
+      sliders: {x: ['x position', 0, 1, 0.01], y: ['y position', 0, 1, 0.01]} 
+    }
   }
 
 })
